@@ -1,6 +1,6 @@
-//TODO dont open the camera until the user hits take setPict
+//TODO dont open the camera until the user hits take setPict ???
 //TODO video canvas blocks the other buttons
-//TODO camera dont close when form closes
+
 var mapp = {
 	v:{
 		m: 0, //message,
@@ -53,7 +53,8 @@ var mapp = {
 		
 		var params = {
 			lat: lat, lon: lon, acc:acc, 
-			descr:$("#i_descr").val()
+			cat: $("#sel_cat").val(),
+			descr: $("#i_descr").val()
 		}
 		if (mapp.v.photo_bin){
 			var reader = new FileReader();
@@ -289,6 +290,8 @@ var mapp = {
 		mapp.v.map.on('moveend', mapp.update); //magic event handles drag, pan, zoom i love leaflet so far
 		mapp.v.map.on('locationfound', mapp.posChanged);
 		
+		mapp.loadCategories();
+		
 	},
 	addMarker: function addMarker(place){ // Adds marker for place to map.
 		//var mark  = L.marker([parseFloat(place.lat), parseFloat(place.lon)]).addTo(mapp.v.map)
@@ -359,6 +362,25 @@ var mapp = {
 		mapp.v.infot.html(tit);
 		mapp.v.infocnt.html(res);
 		mapp.v.info.modal();
+	},
+	loadCategories: function loadCategories(){
+		$.ajax({
+			type: "GET",
+			url: "cats.php",
+			//data: params,
+			dataType: "json",
+			success: function(data, textStatus, jqXHR) {
+				mapp.m( data.ok? "Ok": data.msg);
+				var h = "";
+				if (data.ok) {
+					data = data.data;
+					for (var i = 0; i<data.length; i++){
+						h += '<option value="'+i+'">'+data[i]+'</option>';
+					}
+				}
+				$("#sel_cat").html(h);
+				$("#sel_cat").val(0);
+		}});
 	}
 };
 

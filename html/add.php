@@ -1,7 +1,7 @@
 <?php
 ini_set('post_max_size', '2M');
 ini_set('upload_max_filesize', '2M');
-//TODO add category
+
 	if($_SERVER['REQUEST_METHOD'] == 'GET'){
 		echo "lol";
 		exit(403);

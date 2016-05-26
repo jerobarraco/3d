@@ -26,7 +26,10 @@
 	<link rel="stylesheet" href="s/c/leaflet_numbered_markers.css" />
 	<script src="s/j/leaflet_numbered_markers.js" charset="utf-8"></script>
 	
-	
+	<!-- select picker 
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+	--> 
 	<!-- stuff -->
 	<link href="s/c/styles.css" rel="stylesheet"/>
 	<script src="s/j/mapp.js"></script>
@@ -57,17 +60,6 @@
 						<form class="form" id="frmData" role="form" action="add.php" onsubmit="return false;" method="post" enctype="multipart/form-data"> 
 							<div class="form-group">
 								<div class="input-group"> 
-									<!-- categories dropdown -->
-									<div class="input-group-btn">
-										<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Categoría
-											<span class="caret"></span>
-										</button>
-										<ul class="dropdown-menu">
-											<li><a href="#">HTML</a></li>
-											<li><a href="#">CSS</a></li>
-											<li><a href="#">JavaScript</a></li>
-										</ul>
-									</div>
 									<input type="text" class="form-control" placeholder="Detalle..." id="i_descr" name="descr">
 									<span class="input-group-btn">
 										<button id="snap" type="button" class="btn btn-secondary">
@@ -76,7 +68,6 @@
 									</span>
 									
 
-
 									<!-- <span class="input-group-btn">
 										<button class="btn btn-secondary" type="button" id="btn_add">Agregar!</button>
 									</span> -->
@@ -84,12 +75,12 @@
 									but left for understandig) -->
 								</div>
 								<div class="input-group">
+									<select name="cat" id="sel_cat" class="selectpicker"></select>
 									<input id="i_photo_bin" type="file" class="form-control" name="photo" />
 									<input id="i_f64" type="hidden" name="f64" />
 									<input id="i_lat" type="hidden" name="lat" />
 									<input id="i_lon" type="hidden" name="lon" />
 									<input id="i_acc" type="hidden" name="acc" />
-									<input id="i_cat" type="hidden" name="cat" />
 								</div>
 								<div class="form-group">
 									<video id="video" width="75%" height="75%" autoplay></video>
