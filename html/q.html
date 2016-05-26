@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+</head>
+<body>
+
+
+
+<div id="mapholder"></div>
+radius: <input type="number" id="i_rad" value="1000"/>
+
+<p id="demo">click try</p>
+<button onclick="getLocation()">Actualizar</button>
+<script>
+var x = document.getElementById("demo");
+var result = {};
+Number.prototype.toRad = function() { return this * (Math.PI / 180); };
+
+function showData(data){
+	if (!data.ok){
+		x.innerHTML = "There has been an error: "+data.error;
+		return false;
+	}
+	
+	result = data;
+	var d = data.data;
+	
+	html = "";
+	
+	var arrayLength = d.length;
+	for (var i = 0; i < arrayLength; i++) {
+		html += d[i].lat + ", "+d[i].lon + ": "+ d[i].descr + "<br/>";
+	}
+	x.innerHTML = html;
+};
+	
+//http://stackoverflow.com/questions/5182816/given-point-lat-and-long-find-coordinates-of-corners-of-a-square-with-given-d?rq=1
+function trans(lat, lng, brgdeg, dist){
+	lat1 = lat * ( Math.PI / 180.0 );  //Only do this if you need to convert from deg. to dec.
+	lon1 = lng * ( Math.PI / 180.0 );  //Only do this if you need to convert from deg. to dec.
+	d = dist;
+	R = 6378100; //Radius of the Earth in meters
+	brng = brgdeg * ( Math.PI / 180.0 );
+	lat2 = Math.asin( Math.sin( lat1 ) * Math.cos( d / R ) + Math.cos( lat1 ) * Math.sin( d / R ) * Math.cos( brng ) );
+	lon2 = lon1 + Math.atan2( Math.sin( brng ) * Math.sin( d / R ) * Math.cos( lat1 ), Math.cos( d / R ) - Math.sin( lat1 ) * Math.sin( lat2 ) );
+
+	return [lat2 * ( 180.0 / Math.PI ), lon2 * ( 180.0 / Math.PI ) ];
+}
+
+/*
+lat1 = centerPoint.lat * ( Math.PI / 180 );  //Only do this if you need to convert from deg. to dec.
+lon1 = centerPoint.lng * ( Math.PI / 180 );  //Only do this if you need to convert from deg. to dec.
+d = distance;
+R = EARTHS_RADIUS_IN_METERS;
+brng = bearingInDegrees * ( Math.PI / 180 );
+lat2 = Math.asin( Math.sin( lat1 ) * Math.cos( d / R ) + Math.cos( lat1 ) * Math.sin( d / R ) * Math.cos( brng ) );
+lon2 = lon1 + Math.atan2( Math.sin( brng ) * Math.sin( d / R ) * Math.cos( lat1 ), Math.cos( d / R ) - Math.sin( lat1 ) * Math.sin( lat2 ) );
+
+return new LatLong( lat2 * ( 180 / Math.PI ), lon2 * ( 180 / Math.PI ) );
+*/
+
+function showPosition(position) {
+    var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="
+    +latlon+"&zoom=14&size=400x300&sensor=false";
+    document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
+    document.getElementById("demo").innerHTML = latlon + ","+position.coords.accuracy;
+    var radius = parseInt(document.getElementById("i_rad").value);
+    console.log("radius"+radius);
+    //var radius = 2000;//2km
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    console.log(lat);
+    console.log(lon);
+    var top_left = trans(lat, lon, 135, radius );
+    var bot_right = trans(lat, lon, 315, radius );
+    console.log(top_left);
+    console.log(bot_right);
+    //todo, check why the result is on the opposite direction
+    var params =  {'s':top_left[0],'e':top_left[1], 'n':bot_right[0], 'w':bot_right[1]};
+    console.log("params are " + params);
+    x.innerHTML = "Getting results.";
+	$.get("q.php", params,showData);
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+        case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+        case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+        case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+    }
+}
+	
+
+function getLocation() {
+	x.innerHTML = "getting location";
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+</script>
+
+</body>
+</html>
+
+<!-- ty w3schools
+http://www.w3schools.com/html/html5_geolocation.asp
+
+coords.latitude	The latitude as a decimal number
+coords.longitude	The longitude as a decimal number
+coords.accuracy	The accuracy of position
+coords.altitude	The altitude in meters above the mean sea level
+coords.altitudeAccuracy	The altitude accuracy of position
+coords.heading	The heading as degrees clockwise from North
+coords.speed	The speed in meters per second
+timestamp	The date/time of the response
+
+https://dev.w3.org/geo/api/spec-source.html#coordinates_interface
+-->

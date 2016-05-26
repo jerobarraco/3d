@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<button onclick="getLocation()">Try It</button>
+
+<div id="mapholder"></div>
+<form id="f_add" action="add.php" method="POST" enctype='multipart/form-data'  onsubmit="return false;">
+	<textarea name="descr" id="i_descr" rows="4" cols="50" placeholder="description goes HERE"></textarea>
+	<input type="hidden" name="lat" id="i_lat"/>
+	<input type="hidden" name="lon" id="i_lon"/>
+	<input type="hidden" name="acc" id="i_acc"/>
+	<input type="file" name="photo" id="i_pic" accept="image/*;capture=camera"/>
+	<input name="photo64" />
+</form>
+<p id="demo">Click the button to get your position.</p>
+<script>
+var x = document.getElementById("demo");
+
+function getLocation() {
+	if(!document.getElementById("i_descr").value ){
+		alert("you need to enter the description of the issue");
+		return;
+	}
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="
+    +latlon+"&zoom=14&size=400x300&sensor=false";
+    document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
+    document.getElementById("demo").innerHTML = latlon + ","+position.coords.accuracy;
+    document.getElementById("i_lat").value = ""+position.coords.latitude;
+    document.getElementById("i_lon").value = ""+position.coords.longitude;
+    document.getElementById("i_acc").value = ""+position.coords.accuracy;
+    document.getElementById("f_add").submit();
+    
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+        case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+        case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+        case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+    }
+}
+</script>
+
+</body>
+</html>
+
+<!-- ty w3schools
+http://www.w3schools.com/html/html5_geolocation.asp
+
+coords.latitude	The latitude as a decimal number
+coords.longitude	The longitude as a decimal number
+coords.accuracy	The accuracy of position
+coords.altitude	The altitude in meters above the mean sea level
+coords.altitudeAccuracy	The altitude accuracy of position
+coords.heading	The heading as degrees clockwise from North
+coords.speed	The speed in meters per second
+timestamp	The date/time of the response
+
+https://dev.w3.org/geo/api/spec-source.html#coordinates_interface
+-->
