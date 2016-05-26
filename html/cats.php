@@ -8,8 +8,9 @@
 		3 => 'Policiales', 
 		4 => 'Legales', 
 		5 => 'Servicios', 
-		6 => 'Negocios', 
-		7 => 'Emergencias' 
+		7 => 'Culturales',
+		8 => 'Negocios', 
+		9 => 'Emergencias' 
 	);
 	
 	print(json_encode(array("ok"=>true, "error"=>"", "data"=>$data),

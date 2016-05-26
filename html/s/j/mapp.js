@@ -298,7 +298,7 @@ var mapp = {
 		var mopts = {
 			clickable:true, draggable:false, //this are default, but..
 			riseOnHover:true, title: "#"+place.idn + ": " + place.descr,
-			icon: new L.NumberedDivIcon({number: '#'+place.idn})
+			icon: new L.NumberedDivIcon({number: '#'+place.idn, iconUrl:'s/ii/cats/'+place.cat+'.png'})
 			/*icon: L.divIcon({
 				className: 'label',
 				html: "#"+place.idn,
@@ -357,7 +357,8 @@ var mapp = {
 		res += '<img src="s/i/'+mark.data.idn+'.jpg" class="img-rounded img-responsive" alt="">';
 		res += '<div><h4>'+mark.data.descr+'</h4></div>';
 		var tit = "";
-		tit+= "Evento <a href='#'>#"+mark.data.idn+" <span class='badge'>"+mark.data.score+'</span></a>';
+		tit += '<img src="s/ii/cats/'+mark.data.cat+'.png">';
+		tit += "Evento <a href='#'>#"+mark.data.idn+" <span class='badge'>"+mark.data.score+'</span></a>';
 		
 		mapp.v.infot.html(tit);
 		mapp.v.infocnt.html(res);
@@ -370,14 +371,17 @@ var mapp = {
 			//data: params,
 			dataType: "json",
 			success: function(data, textStatus, jqXHR) {
+				var _cats = {};//its an object, ids are not supposed to be sequential
 				mapp.m( data.ok? "Ok": data.msg);
 				var h = "";
 				if (data.ok) {
 					data = data.data;
 					for (var i = 0; i<data.length; i++){
+						_cats [i] = data[i];
 						h += '<option value="'+i+'">'+data[i]+'</option>';
 					}
 				}
+				mapp.v.cats = _cats;
 				$("#sel_cat").html(h);
 				$("#sel_cat").val(0);
 		}});
