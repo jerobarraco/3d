@@ -18,8 +18,6 @@ import co.com.jonny.mapas1.modelos.Categorias;
  * Created by Jonny on 22/05/2016.
  */
 public class AdaptadorCategorias extends RecyclerView.Adapter<AdaptadorCategorias.ViewHolderCates> {
-
-
     private Context mContext;
     private ArrayList<Categorias> mCategoriases;
     private myOnclick mMyOnclick;
