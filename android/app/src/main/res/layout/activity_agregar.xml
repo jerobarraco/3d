@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="co.com.jonny.mapas1.vistas.Agregar">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarAgregar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        android:layout_marginBottom="10dp"
+        >
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_below="@+id/toolbarAgregar"
+        android:id="@+id/linear1"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_lista_agregar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/Imagen_agregar"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"/>
+
+        <Button
+            android:id="@+id/button_foto"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/Botones"
+            android:text="Tomar foto"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            app:errorEnabled="true"
+            android:hint="Descripción"
+            app:hintAnimationEnabled="true"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/editText_Descrip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+
+                />
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/button_cancelar"
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:theme="@style/Botones"
+            android:text="Cancelar"
+            android:drawableLeft="@android:drawable/ic_delete"
+            />
+
+        <Button
+            android:id="@+id/button_enviar"
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:theme="@style/Botones"
+            android:text="Enviar"
+            android:drawableLeft="@android:drawable/ic_menu_upload"
+            />
+
+
+    </LinearLayout>
+
+</RelativeLayout>
