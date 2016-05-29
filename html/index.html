@@ -19,7 +19,7 @@
 	<script src="s/j/L.Control.Locate.min.js" charset="utf-8"></script>
 	
 	<!-- cluster -->
-	<link rel="stylesheet" href="s/c/MarkerCluster.Default.css" />
+	<link rel="stylesheet" href="s/c/MarkerCluster.Default.css"/>
 	<script src="s/j/leaflet.markercluster.js" charset="utf-8"></script>
 	
 	<!-- label -->
@@ -68,9 +68,11 @@
 									</span>
 									
 
-									<!-- <span class="input-group-btn">
-										<button class="btn btn-secondary" type="button" id="btn_add">Agregar!</button>
-									</span> -->
+									<!-- 
+										<span class="input-group-btn">
+											<button class="btn btn-secondary" type="button" id="btn_add">Agregar!</button>
+										</span>
+									-->
 									<!-- true inputs for compatibility (??? wont work anymore at this point
 									but left for understandig) -->
 								</div>
@@ -124,13 +126,17 @@
 	
 		<nav class="navbar navbar-inverse navbar-fixed-bottom">
 			<div class="container-fluid">
-				<!-- <div class="navbar-header">
-				<a class="navbar-brand" href="#">WebSiteName</a>
-				</div> -->
+				<!-- 
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#">WebSiteName</a>
+					</div>
+				-->
 				<ul class="nav navbar-nav">
-					<li><a href="#" id="b_fadd" data-toggle="modal" data-target="#frmAdd">Reportar</a></li>
+					<li><a href="#" id="b_fadd" data-toggle="modal" data-target="#frmAdd" >Reportar</a></li>
+					<li><select id="sel_cat_filter"></select></li>
 					<li><div class="alert alert-info fade in" id="msg" ></div> </li>
 				</ul>
+				
 			</div>
 		</nav>
 	</div>

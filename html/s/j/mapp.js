@@ -26,7 +26,7 @@ var mapp = {
 			sp = ev.speed;
 		var latlon = lat + "," + lon +":"+ acc + "<br />";
 		if (sp){
-			var kmh = sp*3.6; //60*60/1000;
+			var kmh = parseFloat(sp*3.6).toFixed(4); //60*60/1000;
 			latlon+= "@  "+kmh +"Kmh (" +sp +"M/s)" ;
 		}
 		mapp.m(latlon);
@@ -112,11 +112,15 @@ var mapp = {
 				mapp.update();
 		}});*/
 	},
+	onCatFilterChange: function onCatFilterChange(ev){
+		mapp.v.cat_filter = parseInt($(this).val());
+		mapp.update(null, true);
+	},
 	onFormShow: function onFormShow(ev){
 		$("#b_fadd").hide();
 		//mapp.v.cfpos = mapp.v.cpos;//dangerous! shared reference
-		var cp = mapp.v.cpos;
-		mapp.v.cfpos = [cp[0], cp[1], cp[2]];
+		//var cp = mapp.v.cpos;
+		//mapp.v.cfpos = [cp[0], cp[1], cp[2]];//store after the user take the picture
 		mapp.setPict();
 	},
 	onFormHide: function onFormHide(ev){
@@ -146,7 +150,7 @@ var mapp = {
 	},
 	isSamePlace: function isSamePlace(lat, lon, lat2, lon2){
 		return parseFloat(lat).toFixed(mapp.v.prec) == parseFloat(lat2).toFixed(mapp.v.prec) &&
-		parseFloat(lon).toFixed(mapp.v.prec) == parseFloat(lon2).toFixed(mapp.v.prec);
+			parseFloat(lon).toFixed(mapp.v.prec) == parseFloat(lon2).toFixed(mapp.v.prec);
 	},
 	update: function update(ev, force){//  Updates UI's markers.
 		// get map's bounds
@@ -156,28 +160,31 @@ var mapp = {
 		
 		var params = {
 			n: ne.lat, e:ne.lng,
-			s: sw.lat, w:sw.lng
+			s: sw.lat, w:sw.lng,
+			cat: mapp.v.cat_filter
 		};
-		console.log ("about to update");
+		
+		console.log("about to update");
 		if ((!force) && mapp.isSamePlace(params.n, params.e, mapp.v.lupos[0], mapp.v.lupos[1])){
 			console.log("i just updated near that, wont update");
 			return;
 		}
+		
 		mapp.v.lupos = [params.n, params.e, params.s, params.w];
 		
 		$.getJSON("q.php", params)
-		.done(function(data, textStatus, jqXHR) {// get places within bounds (asynchronously)
-			// remove old markers from map
-			//removeMarkers();
-			if(data.ok){
-				mapp.replaceMarkers(data.data);
-			}else{
-				mapp.m("error: "+ data.error);
-			}
-		})
-		.fail(function(jqXHR, textStatus, errorThrown) {
-			mapp.m("error: "+errorThrown.toString());
-		});
+			.done(function(data, textStatus, jqXHR) {// get places within bounds (asynchronously)
+				// remove old markers from map
+				//removeMarkers();
+				if(data.ok){
+					mapp.replaceMarkers(data.data);
+				}else{
+					mapp.m("Update error: "+ data.error);
+				}
+			})
+			.fail(function(jqXHR, textStatus, errorThrown) {
+				mapp.m("Update error: "+errorThrown.toString());
+			});
 		console.log("updated");
 	},
 	setPict: function setPict(){
@@ -199,6 +206,7 @@ var mapp = {
 		$("#snap").hide();
 		$("#canvas").hide();
 		$("#i_photo_bin").hide();
+		mapp.v.photo_bin = false; /// restart maybe next time the camera will work
 		// Put video listeners into place
 		if(navigator.getUserMedia) { // Standard
 			navigator.getUserMedia(videoObj, function(stream) {
@@ -237,17 +245,17 @@ var mapp = {
 			context.drawImage(video, 0, 0, w, h);
 			//turn off camera
 			mapp.closeCam();
+			mapp.storePos();
 		});
 	},
 	closeCam: function closeCam(){
-			video.pause();
-			video.src=null;
-			video.mozSrcObject = null;
-			mapp.v.photo_bin = false; ///restart maybe next time the camera will work
-			$("#video").hide();
-			$("#snap").show();
-			$("#snap").click(mapp.setPict);
-			$("#i_descr").focus();
+		video.pause();
+		video.src = null;
+		video.mozSrcObject = null;
+		$("#video").hide();
+		$("#snap").show();
+		$("#snap").click(mapp.setPict);
+		$("#i_descr").focus();
 	},
 	onLoad: function onLoad(){ // execute when the DOM is fully loaded
 		mapp.v.m = document.getElementById("msg");
@@ -263,8 +271,10 @@ var mapp = {
 		$("#b_follow").hide();
 		$('#frmAdd').on('shown.bs.modal', mapp.onFormShow);
 		$('#frmAdd').on('hidden.bs.modal', mapp.onFormHide);
+		$('#sel_cat_filter').change(mapp.onCatFilterChange);
+		$('#i_photo_bin')[0].onchange = mapp.storePos;
 	
-		mapp.v.map = L.map('map-canvas').setView([0,0], 18); // http://leafletjs.com/
+		mapp.v.map = L.map('map-canvas').setView([0, 0], 18); // http://leafletjs.com/
 		// http://leafletjs.com/examples/mobile.html
 		// https://github.com/leaflet-extras/leaflet-providers
 		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // http://www.openstreetmap.org/copyright
@@ -286,12 +296,11 @@ var mapp = {
 		L.control.locate(locopts).addTo(mapp.v.map).start();
 		mapp.v.mg = L.markerClusterGroup();
 		mapp.v.map.addLayer(mapp.v.mg);
-		mapp.v.map.on('locationerror', function(e){ mapp.m(e.message) });
+		mapp.v.map.on('locationerror', function(e){ mapp.m( "GPS Error: "+ e.message) });
 		mapp.v.map.on('moveend', mapp.update); //magic event handles drag, pan, zoom i love leaflet so far
 		mapp.v.map.on('locationfound', mapp.posChanged);
 		
 		mapp.loadCategories();
-		
 	},
 	addMarker: function addMarker(place){ // Adds marker for place to map.
 		//var mark  = L.marker([parseFloat(place.lat), parseFloat(place.lon)]).addTo(mapp.v.map)
@@ -309,7 +318,7 @@ var mapp = {
 			//.bindPopup("#"+place.idn + ": " + place.descr);
 		mark.data = { 
 			idn: parseInt(place.idn), descr:place.descr, score:parseInt(place.score),
-			cat:parseInt(place.cat), state:parseInt(place.int)
+			cat: parseInt(place.cat), state:parseInt(place.int)
 		};
 		mark.on("click", mapp.showInfo);
 		mapp.v.mg.addLayer(mark);
@@ -371,8 +380,8 @@ var mapp = {
 			//data: params,
 			dataType: "json",
 			success: function(data, textStatus, jqXHR) {
-				var _cats = {};//its an object, ids are not supposed to be sequential
-				mapp.m( data.ok? "Ok": data.msg);
+				var _cats = {}; //its an object, ids are not supposed to be sequential
+				mapp.m( data.ok ? "Ok": data.msg);
 				var h = "";
 				if (data.ok) {
 					data = data.data;
@@ -384,7 +393,16 @@ var mapp = {
 				mapp.v.cats = _cats;
 				$("#sel_cat").html(h);
 				$("#sel_cat").val(0);
-		}});
+				h = '<option value="-1"> - Sin Filtro - </option>' +h;
+				$("#sel_cat_filter").html(h);
+				$("#sel_cat_filter").val(0);
+			}
+		});
+	},
+	storePos: function storePos(){
+		var cp = mapp.v.cpos;
+		mapp.v.cfpos = [cp[0], cp[1], cp[2]];
+		mapp.m("Posición: "+mapp.v.cfpos);
 	}
 };
 
