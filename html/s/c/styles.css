@@ -101,3 +101,8 @@ html, body, #map-canvas, .container-fluid
 .tt-suggestion p {
     margin: 0;
 }
+
+/* fixes*/
+.leaflet-bottom.leaflet-right{
+	z-index: 20000;
+}

@@ -1,4 +1,3 @@
-/* fixes at the end*/
 
 /* required styles */
 
@@ -479,8 +478,3 @@
 	background: #fff;
 	border: 1px solid #666;
 	}
-
-/* fixes*/
-.leaflet-control-attribution{
-	z-index: 20000;
-}

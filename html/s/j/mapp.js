@@ -1,5 +1,4 @@
 //TODO dont open the camera until the user hits take setPict ???
-//TODO video canvas blocks the other buttons
 
 var mapp = {
 	v:{
