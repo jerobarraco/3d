@@ -6,12 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -33,34 +30,20 @@ import android.widget.TextView;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.gedesoft.ddd.R;
+import com.gedesoft.ddd.modelos.MarcadoresAsync;
 import com.gedesoft.ddd.modelos.MarcadoresDatos;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, android.location.LocationListener {
     private static final int CODIGO_SOLICITUD_LOCATION = 1;
@@ -145,11 +128,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         startActivity(intent);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
 
     /**
      * Método que nos comunica si el mapa ya está listo y ejecuta las cosas solo cuando lo está.
@@ -167,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Manifest.permission.ACCESS_COARSE_LOCATION}, CODIGO_SOLICITUD_LOCATION);
 
 
-                // return;
             }
             Iniciar();
         } else {
@@ -234,8 +211,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
         LatLngBounds curScreen = mMap.getProjection().getVisibleRegion().latLngBounds;
-//        LatLngBounds curScreen = mMap.getProjection()
-        //JSON
+
         norte = curScreen.northeast.latitude;
         este = curScreen.northeast.longitude;
         sur = curScreen.southwest.latitude;
@@ -258,8 +234,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(target));
         }
 
-//        mTextView.setText("Estás en " + curScreen);
-        //Log.e("TAG", "Estás en " + lat + lng);
     }
 
 
@@ -279,239 +253,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    //Aquí inicia JSON
-
-    public class Marcadores extends AsyncTask<String, String, List<MarcadoresDatos>> {
 
 
-        @Override
-        protected List<MarcadoresDatos> doInBackground(String... params) {
-
-            if (!mapReady) {
-            } else {
-                HttpURLConnection connection = null;
-                BufferedReader bufferedReader = null;
-                try {
-                    URL url = new URL(params[0]);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-
-                    InputStream stream = connection.getInputStream();
-                    bufferedReader = new BufferedReader(new InputStreamReader(stream));
-                    StringBuffer Buffer = new StringBuffer();
-
-                    String line = "";
-                    while ((line = bufferedReader.readLine()) != null) {
-                        Buffer.append(line);
-                    }
-
-                    String completeJson = Buffer.toString();
-                    JSONObject fullJsonCall = new JSONObject(completeJson);
-                    JSONArray arrayMarcadores = fullJsonCall.getJSONArray("data");
-
-
-                    //List<MarkerOptions> marcadoreslista = new ArrayList<MarkerOptions>();
-                    ArrayList<MarcadoresDatos> marcadoresDatoses = new ArrayList<>();
-                    for (int i = 0; i < arrayMarcadores.length(); i++) {
-                        MarcadoresDatos marcadoresDatos = new MarcadoresDatos();
-                        JSONObject marcadorFinal = arrayMarcadores.getJSONObject(i);
-                        marcadoresDatos.setLatitud(marcadorFinal.getDouble("lat"));
-                        marcadoresDatos.setIdMarker(marcadorFinal.getInt("idn"));
-                        marcadoresDatos.setLongitud(marcadorFinal.getDouble("lon"));
-                        marcadoresDatos.setTexto(marcadorFinal.getString("descr"));
-                        marcadoresDatos.setCategorias(marcadorFinal.getInt("cat"));
-
-                        marcadoresDatoses.add(marcadoresDatos);
-
-
-                    }
-
-                    return marcadoresDatoses;
-
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-
-                    try {
-                        if (bufferedReader != null) {
-                            bufferedReader.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<MarcadoresDatos> resultado) {
-            super.onPostExecute(resultado);
-
-            mMap.clear();
-            mapa.clear();
-
-
-            if (resultado == null) {
-                Snackbar.make(findViewById(android.R.id.content), "Verifica tu conexión a internet", Snackbar.LENGTH_LONG).show();
-            } else {
-
-
-                for (int i = 0; i < resultado.size(); i++) {
-                    MarcadoresDatos currentMarker = resultado.get(i);
-                    Marker marcador = mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(currentMarker.getLatitud(), currentMarker.getLongitud()))
-                            .title(currentMarker.getTexto())
-                            .icon(BitmapDescriptorFactory.fromBitmap(Marcadores(currentMarker.getCategorias())))
-                    );
-
-                    mapa.put(marcador.getId(), currentMarker);
-//                    String url = "http://test.grapot.co/s/i/"+String.valueOf(currentMarker.getIdMarker())+".jpg";
-//                    new DownloadImageTask(marcador.getId()).execute(url);
-
-                }
-            }
-
-        }
-
-    }
-
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private String mid;
-
-        public DownloadImageTask(String pmid) {
-            mid = pmid;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-
-            if (result != null) {
-                MarcadoresDatos m = mapa.get(mid);
-                if (m != null) {
-                    m.setImg(result);
-                } else {
-                    Log.w("TAG", "wtf me hiciste cargar una imagen para un marker que ya no existe?");
-                }
-
-            }
-        }
-    }
-
-    public Bitmap Marcadores(int marcadoresDatos) {
-        int height = 100;
-        int width = 100;
-
-        //Animales
-        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.dog);
-        Bitmap b = bitmapdraw.getBitmap();
-        Bitmap perroMarker = Bitmap.createScaledBitmap(b, width, height, false);
-
-        //Ambientales
-        BitmapDrawable bitmapambientales = (BitmapDrawable) getResources().getDrawable(R.drawable.ambientales);
-        Bitmap b2 = bitmapambientales.getBitmap();
-        Bitmap ambientalMarker = Bitmap.createScaledBitmap(b2, width, height, false);
-
-        //Policiales
-        BitmapDrawable bitmapPoliciales = (BitmapDrawable) getResources().getDrawable(R.drawable.policiales);
-        Bitmap b3 = bitmapPoliciales.getBitmap();
-        Bitmap policialesMarker = Bitmap.createScaledBitmap(b3, width, height, false);
-
-        //Legales
-        BitmapDrawable bitmapLegales = (BitmapDrawable) getResources().getDrawable(R.drawable.legales);
-        Bitmap b4 = bitmapLegales.getBitmap();
-        Bitmap legalesMarker = Bitmap.createScaledBitmap(b4, width, height, false);
-
-        //Servicios
-        BitmapDrawable bitmapServicios = (BitmapDrawable) getResources().getDrawable(R.drawable.servicios);
-        Bitmap b5 = bitmapServicios.getBitmap();
-        Bitmap serviciosMarker = Bitmap.createScaledBitmap(b5, width, height, false);
-
-        //Sociales
-        BitmapDrawable bitmapSociales = (BitmapDrawable) getResources().getDrawable(R.drawable.sociales);
-        Bitmap b6 = bitmapSociales.getBitmap();
-        Bitmap socialesMarker = Bitmap.createScaledBitmap(b6, width, height, false);
-
-        //Negocios
-        BitmapDrawable bitmapNegocios = (BitmapDrawable) getResources().getDrawable(R.drawable.negocios);
-        Bitmap b7 = bitmapNegocios.getBitmap();
-        Bitmap negociosMarker = Bitmap.createScaledBitmap(b7, width, height, false);
-
-        //Emergencias
-        BitmapDrawable bitmapEmergencias = (BitmapDrawable) getResources().getDrawable(R.drawable.emergencias);
-        Bitmap b8 = bitmapEmergencias.getBitmap();
-        Bitmap emergenciasMaker = Bitmap.createScaledBitmap(b8, width, height, false);
-
-        //Default
-        BitmapDrawable bitmapDefault = (BitmapDrawable) getResources().getDrawable(R.drawable.defaultmarker);
-        Bitmap b0 = bitmapDefault.getBitmap();
-        Bitmap DefaultMaker = Bitmap.createScaledBitmap(b0, width, height, false);
-
-
-        switch (marcadoresDatos) {
-            case 0:
-                return DefaultMaker;
-            case 1:
-                return perroMarker;
-            case 2:
-                return ambientalMarker;
-            case 3:
-                return policialesMarker;
-            case 4:
-                return legalesMarker;
-            case 5:
-                return serviciosMarker;
-            case 6:
-                return socialesMarker;
-            case 7:
-                return negociosMarker;
-            case 8:
-                return emergenciasMaker;
-            default:
-                return DefaultMaker;
-
-        }
-    }
-
-    private class InfoWindowRefresher implements Callback {
-        private Marker markerToRefresh;
-
-        private InfoWindowRefresher(Marker markerToRefresh) {
-            this.markerToRefresh = markerToRefresh;
-        }
-
-        @Override
-        public void onSuccess() {
-            markerToRefresh.showInfoWindow();
-        }
-
-        @Override
-        public void onError() {
-        }
-    }
 
     public void Iniciar() {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -560,8 +303,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     este = curScreen.northeast.longitude;
                     sur = curScreen.southwest.latitude;
                     oeste = curScreen.southwest.longitude;
-                    Marcadores marcadores = new Marcadores();
-                    marcadores.execute("http://test.grapot.co/q.php?n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste + "&cat=" + categoria);
+                    MarcadoresAsync marcadoresAsync = new MarcadoresAsync(mapReady, mMap, MainActivity.this, mapa);
+                    marcadoresAsync.execute("http://test.grapot.co/q.php?n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste + "&cat=" + categoria);
                 }
             });
 
@@ -655,8 +398,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     este = curScreen.northeast.longitude;
                     sur = curScreen.southwest.latitude;
                     oeste = curScreen.southwest.longitude;
-                    Marcadores marcadores = new Marcadores();
-                    marcadores.execute("http://test.grapot.co/q.php?cat=" + categoria + "&n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste);
+                    MarcadoresAsync marcadoresAsync = new MarcadoresAsync(mapReady, mMap, MainActivity.this, mapa);
+                    marcadoresAsync.execute("http://test.grapot.co/q.php?cat=" + categoria + "&n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste);
                 }
             });
 
