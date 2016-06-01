@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                // Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this)
-                        .setMessage("Validando tu información...")
+                        .setMessage(getString(R.string.validando_informacion_login))
                         .setCancelable(false);
                 builder.show();
 

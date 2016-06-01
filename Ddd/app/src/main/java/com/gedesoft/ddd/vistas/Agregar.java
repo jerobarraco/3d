@@ -60,15 +60,15 @@ public class Agregar extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Agregar.this)
-                        .setMessage("¿Quieres cancelar tu envío?")
-                        .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        .setMessage(getString(R.string.cancelar_envio_agregar))
+                        .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //dialog.dismiss();
                                 finish();
                             }
                         })
-                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -96,9 +96,9 @@ public class Agregar extends AppCompatActivity {
                 try {
                     String textoMarcador = mEditText.getText().toString();
                     if (mEditText.getText().toString().isEmpty()) {
-                        mEditText.setError("Este campo es obligatorio");
+                        mEditText.setError(getString(R.string.error_campo_obligatorio_agregar));
                     }else if(pic.getDrawable() == null) {
-                        Snackbar.make(findViewById(android.R.id.content), "La imagen es obligatoria", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), R.string.imagen_obligatoria_agregar, Snackbar.LENGTH_SHORT).show();
                     }else {
                         String method = "info";
                         PostAsync postAsync = new PostAsync(Agregar.this, Agregar.this);
@@ -135,7 +135,7 @@ public class Agregar extends AppCompatActivity {
         });
 
 
-        setTitle("Agregar - "+ nombre);
+        setTitle(getString(R.string.titulo_agregar_activity)+ nombre);
     }
 
 

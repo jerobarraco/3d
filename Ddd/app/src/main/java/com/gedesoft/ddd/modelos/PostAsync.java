@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.gedesoft.ddd.R;
 import com.gedesoft.ddd.vistas.Agregar;
 
 import org.json.JSONException;
@@ -116,10 +117,10 @@ public class PostAsync extends AsyncTask<String, Void, String> {
 
         if(res != null){
             final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                    .setTitle("Operación exitosa")
-                    .setMessage("Has añadido el marcador con éxito. Gracias por tu información. ¿Deseas compartir tu aporte en Facebook?")
+                    .setTitle(mContext.getString(R.string.exito_postasync))
+                    .setMessage(mContext.getString(R.string.exito_compartir_face_postasync))
                     .setCancelable(false)
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(mContext.getString(R.string.no), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
@@ -128,15 +129,15 @@ public class PostAsync extends AsyncTask<String, Void, String> {
                             }
 
                     )
-                    .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(mContext.getString(R.string.si), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                             ShareLinkContent content = new ShareLinkContent.Builder()
                                     .setContentUrl(Uri.parse("https://developers.facebook.com"))
-                                    .setContentDescription("Reporta tus incomodidades o actividades a tu comunidad y se parte de la solución")
-                                    .setContentTitle("DDD")
-                                    .setQuote("Mira la denuncia que hice, descarga DDD ahora mismo")
+                                    .setContentDescription(mContext.getString(R.string.mensaje_descrip_facebook_link))
+                                    .setContentTitle(mContext.getString(R.string.title_facebook_link))
+                                    .setQuote(mContext.getString(R.string.quote_facebook_link))
                                     .build();
                             shareDialog.show(content);
 
@@ -146,10 +147,10 @@ public class PostAsync extends AsyncTask<String, Void, String> {
             builder.show();
         }else {
             final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                    .setTitle("Error en la operación")
-                    .setMessage("Verifica tu conexión a internet y asegúrate que tu GPS esté encendido e intenta de nuevo")
+                    .setTitle(mContext.getString(R.string.error_operacion_postasync))
+                    .setMessage(mContext.getString(R.string.verificagpsinternet_postasync))
                     .setCancelable(false)
-                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -163,7 +164,7 @@ public class PostAsync extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
         dialog.setCancelable(false);
-        dialog.setMessage("Generando marcador, por favor espera");
+        dialog.setMessage(mContext.getString(R.string.generando_marcador_postasync));
         dialog.show();
     }
 

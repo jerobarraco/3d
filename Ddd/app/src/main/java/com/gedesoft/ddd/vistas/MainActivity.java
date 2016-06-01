@@ -160,15 +160,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case CODIGO_SOLICITUD_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Snackbar.make(findViewById(android.R.id.content), "Ya has autorizado los permisos", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), R.string.permisos_result_main, Snackbar.LENGTH_SHORT).show();
                 }
             case CODIGO_SOLICITUD_COARSEFINE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Snackbar.make(findViewById(android.R.id.content), "Ya has autorizado los permisos", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), R.string.permisos_result_main, Snackbar.LENGTH_SHORT).show();
                 }
 
         }
@@ -183,16 +182,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (!enabled) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                    .setTitle("GPS no activado")
+                    .setTitle(getString(R.string.titulo_gps_no_activo_main))
                     .setCancelable(false)
-                    .setMessage("¿Deseas activar tu GPS? No podrás usar la aplicación sin activar tu GPS")
-                    .setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                    .setMessage(getString(R.string.activar_gps_main))
+                    .setNegativeButton(getString(R.string.salir), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
                         }
                     })
-                    .setPositiveButton("Activar", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.activar), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);

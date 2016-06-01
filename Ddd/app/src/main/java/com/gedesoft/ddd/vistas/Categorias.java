@@ -31,7 +31,7 @@ public class Categorias extends AppCompatActivity implements AdaptadorCategorias
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarCategorias);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Categorías");
+        getSupportActionBar().setTitle(R.string.titulo_categorias_activity);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null){
@@ -44,14 +44,14 @@ public class Categorias extends AppCompatActivity implements AdaptadorCategorias
 
         }
 
-        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias("Animales", R.drawable.dog, 1));
-        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias("Ambientales", R.drawable.ambientales, 2));
-        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias("Policiales", R.drawable.policiales, 3));
-        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias("Legales", R.drawable.legales, 4));
-        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias("Servicios", R.drawable.servicios, 5));
-        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias("Sociales", R.drawable.sociales, 6));
-        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias("Negocios", R.drawable.negocios, 7));
-        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias("Emergencias", R.drawable.emergencias, 8));
+        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias(getString(R.string.animales_categoria), R.drawable.dog, 1));
+        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias(getString(R.string.ambientales_categoria), R.drawable.ambientales, 2));
+        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias(getString(R.string.policiales_categoria), R.drawable.policiales, 3));
+        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias(getString(R.string.legales_categoria), R.drawable.legales, 4));
+        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias(getString(R.string.servicios_categoria), R.drawable.servicios, 5));
+        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias(getString(R.string.sociales_categoria), R.drawable.sociales, 6));
+        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias(getString(R.string.negocios_categoria), R.drawable.negocios, 7));
+        mCategoriases.add(new com.gedesoft.ddd.modelos.Categorias(getString(R.string.emergencias_categoria), R.drawable.emergencias, 8));
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_lista_categorias);
 
@@ -69,12 +69,12 @@ public class Categorias extends AppCompatActivity implements AdaptadorCategorias
     public void onClick(AdaptadorCategorias.ViewHolderCates viewHolderCates, int id) {
 
         com.gedesoft.ddd.modelos.Categorias cateActual = mCategoriases.get(id);
-        if (cateActual.getNombre().isEmpty() || cateActual.getCategoria() > 8){
+        if (cateActual.getNombre().isEmpty() || cateActual.getCategoria() > 8 || cateActual.getCategoria() < 1){
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                    .setTitle("Información inválida")
+                    .setTitle(getString(R.string.informacion_invalida_categorias))
                     .setCancelable(false)
-                    .setMessage("No has elegido una categoría de manera correcta. Intenta de nuevo")
-                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    .setMessage(getString(R.string.datos_no_coinciden_categorias))
+                    .setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

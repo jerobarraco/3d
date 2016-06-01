@@ -123,7 +123,7 @@ public class MarcadoresAsync extends AsyncTask<String, String, List<MarcadoresDa
 
 
         if (resultado == null) {
-            Snackbar.make(mActivity.findViewById(android.R.id.content), "Verifica tu conexión a internet", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mActivity.findViewById(android.R.id.content), R.string.conexion_internet_marcadoresasync, Snackbar.LENGTH_LONG).show();
         } else {
 
 
