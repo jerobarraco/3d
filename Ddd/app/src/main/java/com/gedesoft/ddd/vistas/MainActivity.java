@@ -76,10 +76,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double sur;
     private double oeste;
     private int acc;
+    private int categoria=-1;
     private FloatingActionButton mFloatingActionButton;
     private Marker lastOpenned = null;
     private ImageView imgInfoWindow;
     private Hashtable<String, MarcadoresDatos> mapa = new Hashtable<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -559,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     sur = curScreen.southwest.latitude;
                     oeste = curScreen.southwest.longitude;
                     Marcadores marcadores = new Marcadores();
-                    marcadores.execute("http://test.grapot.co/q.php?n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste);
+                    marcadores.execute("http://test.grapot.co/q.php?n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste + "&cat=" + categoria);
                 }
             });
 
@@ -654,7 +656,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     sur = curScreen.southwest.latitude;
                     oeste = curScreen.southwest.longitude;
                     Marcadores marcadores = new Marcadores();
-                    marcadores.execute("http://test.grapot.co/q.php?n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste);
+                    marcadores.execute("http://test.grapot.co/q.php?cat=" + categoria + "&n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste);
                 }
             });
 
