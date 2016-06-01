@@ -10,3 +10,15 @@ syntax: glob
 android/.idea/
 android/app/build
 android/build/
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+Ddd/.idea/
+Ddd/app/build/
+Ddd/local.properties
+Ddd/build/
