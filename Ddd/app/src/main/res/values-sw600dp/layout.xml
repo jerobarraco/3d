@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="activity_agregar" type="layout">
+        @layout/activity_agregar_large
+    </item>
+
+</resources>
