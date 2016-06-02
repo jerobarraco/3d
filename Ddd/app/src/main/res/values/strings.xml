@@ -4,7 +4,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="action_settings">Salir</string>
+    <string name="logout">Salir</string>
     <string name="permisos_result_main">Ya has autorizado los permisos</string>
     <string name="titulo_gps_no_activo_main">GPS no activado</string>
     <string name="activar_gps_main">¿Deseas activar tu GPS? No podrás usar la aplicación sin activar tu GPS</string>
@@ -39,4 +39,6 @@
     <string name="error_operacion_postasync">Error en la operación</string>
     <string name="verificagpsinternet_postasync">Verifica tu conexión a internet y asegúrate que tu GPS esté encendido e intenta de nuevo</string>
     <string name="generando_marcador_postasync">Generando marcador, por favor espera</string>
+    <string name="menu_perfil">Mi Perfil</string>
+    <string name="tu_perfil">Tu perfil</string>
 </resources>

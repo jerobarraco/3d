@@ -66,6 +66,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Hashtable<String, MarcadoresDatos> mapa = new Hashtable<>();
 
 
+    //bundle info facebook
+    String id;
+    String name;
+    String surname;
+    String imageUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,10 +82,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Datos de Facebook
 
         Bundle inBundle = getIntent().getExtras();
-        String id = inBundle.get("idprofile").toString();
-        String name = inBundle.get("name").toString();
-        String surname = inBundle.get("surname").toString();
-        String imageUrl = inBundle.get("imageUrl").toString();
+        if (inBundle == null){
+
+        }else {
+            id = inBundle.get("idprofile").toString();
+            name = inBundle.get("name").toString();
+            surname = inBundle.get("surname").toString();
+            imageUrl = inBundle.get("imageUrl").toString();
+        }
 
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
@@ -87,11 +97,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Categorias.class);
-                intent.putExtra("Latitud", lat);
-                intent.putExtra("Longitud", lng);
-                intent.putExtra("Acc", acc);
-                startActivity(intent);
+                Intent intent2 = new Intent(MainActivity.this, Categorias.class);
+                intent2.putExtra("Latitud", lat);
+                intent2.putExtra("Longitud", lng);
+                intent2.putExtra("Acc", acc);
+                startActivity(intent2);
             }
         });
 
@@ -497,7 +507,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+
+
+        if (id == R.id.action_perfil) {
+            Intent intent = new Intent(this, Perfil.class);
+            intent.putExtra(Perfil.NAME, name);
+            intent.putExtra(Perfil.SURNAME, surname);
+            intent.putExtra(Perfil.ID, this.id);
+            intent.putExtra(Perfil.IMG, imageUrl);
+            startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.action_logout) {
             logout();
             return true;
         }

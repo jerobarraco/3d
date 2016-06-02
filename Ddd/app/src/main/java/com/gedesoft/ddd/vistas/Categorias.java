@@ -30,7 +30,7 @@ public class Categorias extends AppCompatActivity implements AdaptadorCategorias
         setContentView(R.layout.activity_categorias);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarCategorias);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.titulo_categorias_activity);
 
         Bundle bundle = getIntent().getExtras();
