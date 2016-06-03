@@ -273,7 +273,7 @@ var mapp = {
 		$('#sel_cat_filter').change(mapp.onCatFilterChange);
 		$('#i_photo_bin')[0].onchange = mapp.storePos;
 	
-		mapp.v.map = L.map('map-canvas').setView([0, 0], 18); // http://leafletjs.com/
+		mapp.v.map = L.map('map-canvas').setView([0, 0], 17); // http://leafletjs.com/
 		// http://leafletjs.com/examples/mobile.html
 		// https://github.com/leaflet-extras/leaflet-providers
 		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // http://www.openstreetmap.org/copyright
@@ -365,7 +365,7 @@ var mapp = {
 		res += '<img src="s/i/'+mark.data.idn+'.jpg" class="img-rounded img-responsive" alt="">';
 		res += '<div><h4>'+mark.data.descr+'</h4></div>';
 		var tit = "";
-		tit += '<img src="s/ii/cats/'+mark.data.cat+'.png">';
+		tit += '<img src="s/ii/cats/'+mark.data.cat+'.png" alt="'+mapp.v.cats[mark.data.cat]+'">';
 		tit += "Evento <a href='#'>#"+mark.data.idn+" <span class='badge'>"+mark.data.score+'</span></a>';
 		
 		mapp.v.infot.html(tit);
