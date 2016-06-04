@@ -13,7 +13,6 @@
 		if( !isset($js['id']) ){
 			throw new Exception("Invalid access_token ".$js);
 		}
-		
 		session_start();    
 		$res  = ["ok"=>true, "error"=>"", "data"=>[ "uid"=>$js['id'], "utk"=>session_id(), "fib"=>$_POST['fib'], "atk"=>$atk , "fbdata"=>$js]];
 	//}catch(Exception $e) {

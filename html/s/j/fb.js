@@ -14,6 +14,8 @@ mapp.fb = {
 				dataType: "json",
 				success: function(data, textStatus, jqXHR) {
 					mapp.m(data);
+					mapp.v.uid = data.data.uid;
+					mapp.v.utk = data.data.utk;
 				}
 			});
 
@@ -22,7 +24,6 @@ mapp.fb = {
 			mapp.m("authorize me plz");
 		}
 	}
-	
 };
 
 

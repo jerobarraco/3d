@@ -13,7 +13,9 @@ var mapp = {
 		cpos: [0,0,0], //current pos (updated by posChanged)
 		cfpos: [0,0,0], //current form pos (updated by onFormShow)
 		marks: [], //markers
-		photo_bin: false //is photo input file?
+		photo_bin: false, //is photo input file?
+		uid:0,
+		utk:0
 	},
 	m: function m(s){
 		mapp.v.m.innerHTML = s;
@@ -33,6 +35,8 @@ var mapp = {
 		//mapp.showPosition(pos);//actually thanks to a good design i dont need this
 	},
 	doPostIssue: function doPostIssue(params){//i hate async stuff
+		params.uid = mapps.v.uid;
+		params.utk = mapps.v.utk;
 		$.ajax({
 			type: "POST",
 			url: "add.php",
