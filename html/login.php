@@ -1,21 +1,26 @@
 <?php
 	header('Content-Type: application/json');
 	
-	
-	$data = array(
-		0 => 'Sin categoría', 
-		1 => 'Animales',
-		2 => 'Ambientales', 
-		3 => 'Policiales', 
-		4 => 'Legales', 
-		5 => 'Servicios', 
-		6 => 'Culturales',
-		7 => 'Negocios',
-		8 => 'Emergencias'
-	);
-	session_start();    
-	print(json_encode(array("ok"=>true, "error"=>"", "data"=>array("uid"=>0, "utk"=>session_id(), "fib"=>$_POST['fib'], "atk"=>$_POST['atk'] )),
-		JSON_PARTIAL_OUTPUT_ON_ERROR|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT));
-	//print(json_last_error());
-	exit();
+	include("stuff/pconn.php");
+	$res = ["ok"=>false, "msg"=>" no idea", "data"=>[]];
+	//try{
+		$atk = $_POST["atk"];
+		if (!isset($atk)){
+			throw new Exception ("....");
+		}
+		
+		$js = json_decode(file_get_contents("https://graph.facebook.com/me?fields=id&access_token=$atk"), true);
+		if( !isset($js['id']) ){
+			throw new Exception("Invalid access_token ".$js);
+		}
+		
+		session_start();    
+		$res  = ["ok"=>true, "error"=>"", "data"=>[ "uid"=>$js['id'], "utk"=>session_id(), "fib"=>$_POST['fib'], "atk"=>$atk , "fbdata"=>$js]];
+	//}catch(Exception $e) {
+	//	$res = [ "ok"=> false, "msg" => $e->getMessage(), "idn"=>-1];
+	//}
+
+	echo json_encode($res,
+			JSON_PARTIAL_OUTPUT_ON_ERROR|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+	return;
 ?>

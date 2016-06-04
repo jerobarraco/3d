@@ -50,9 +50,8 @@ ini_set('upload_max_filesize', '2M');
 		}else{
 			//no photo
 		}
-		$res = [ 'ok'=>true, "msg" => 'is all dandy', "idn"=>intval($idn)];
+		$res = [ 'ok'=>true, "msg" => 'it is all dandy', "idn"=>intval($idn)];
 	}catch(Exception $e) {
-		throw new Exception($e->getMessage());
 		$res = [ "ok"=> false, "msg" => $e->getMessage(), "idn"=>-1];
 	}
 
