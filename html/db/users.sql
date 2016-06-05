@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jun 05, 2016 at 04:35 PM
+-- Generation Time: Jun 05, 2016 at 05:34 PM
 -- Server version: 5.6.30
 -- PHP Version: 5.4.31
 
@@ -29,8 +29,9 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `utk` varchar(255) NOT NULL,
-  `fid` int(10) unsigned NOT NULL,
+  `fid` varchar(256) NOT NULL,
   `ftk` varchar(255) NOT NULL,
+  `rep` int(11) NOT NULL DEFAULT '0' COMMENT 'reputation',
   PRIMARY KEY (`id`),
   KEY `utk` (`utk`),
   KEY `fid` (`fid`,`ftk`)

@@ -5,7 +5,7 @@ mapp.fb = {
 			mapp.m("welcome to facebook");
 			mapp.fb.uid = response.authResponse.userID;
 			
-			var p = {'fib':mapp.fb.uid, 'atk':response.authResponse.accessToken };
+			var p = {'fid':mapp.fb.uid, 'atk':response.authResponse.accessToken };
 			$.ajax({
 				type: "POST",
 				url: "login.php",
