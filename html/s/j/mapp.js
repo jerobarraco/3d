@@ -35,15 +35,15 @@ var mapp = {
 		//mapp.showPosition(pos);//actually thanks to a good design i dont need this
 	},
 	doPostIssue: function doPostIssue(params){//i hate async stuff
-		params.uid = mapps.v.uid;
-		params.utk = mapps.v.utk;
+		params.uid = mapp.v.uid;
+		params.utk = mapp.v.utk;
 		$.ajax({
 			type: "POST",
 			url: "add.php",
 			data: params,
 			dataType: "json",
 			success: function(data, textStatus, jqXHR) {
-				mapp.m( data.ok? "Ok": data.msg);
+				mapp.m( data.ok? "Ok" : data.msg);
 				mapp.v.map.panTo({lat: mapp.v.cfpos[0], lng:mapp.v.cfpos[1]});
 				mapp.update(null, true);
 		}});

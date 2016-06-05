@@ -5,7 +5,7 @@
 	$res = ["ok"=>false, "msg"=>" no idea", "data"=>[]];
 	try{
 		$atk = $_POST["atk"];
-		$fid = intval($_POST["fid"]);
+		$fid = $_POST["fid"];
 		
 		if (!isset($atk)){
 			throw new Exception ("....");
@@ -24,7 +24,7 @@
 		session_start();
 		//get user
 		$sth = $conn->prepare('SELECT * FROM users WHERE fid = ?;');
-		$sth->bindParam(1, $fid, PDO::PARAM_INT);
+		$sth->bindParam(1, $fid, PDO::PARAM_STR, 255);
 		
 		if (!$sth->execute()){
 			throw new Exception("Error getting user: ".$sth->errorCode().": ".$sth->errorInfo() );
@@ -37,8 +37,7 @@
 			$uid = $result['id'];
 		}else{//no user, create it
 			$sth = $conn->prepare('INSERT INTO users (fid, ftk, utk, rep) values (?, "", "", 0);');
-			$sth->bindParam(1, $fid, PDO::PARAM_INT);
-			//$sth->bindParam(2, $atk, PDO::PARAM_STR, 255);
+			$sth->bindParam(1, $fid, PDO::PARAM_STR, 255);
 			
 			if (!$sth->execute()){
 				throw new Exception("Error creating user: ".$sth->errorCode().": ".$sth->errorInfo() );

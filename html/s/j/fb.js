@@ -2,7 +2,7 @@ mapp.fb = {
 	uid:-1,
 	logSẗatus: function logSẗatus(response){
 		if (response.status == "connected"){
-			mapp.m("welcome to facebook");
+			mapp.m("Conectado a FB.");
 			mapp.fb.uid = response.authResponse.userID;
 			
 			var p = {'fid':mapp.fb.uid, 'atk':response.authResponse.accessToken };
@@ -16,7 +16,7 @@ mapp.fb = {
 					mapp.v.uid = data.data.uid;
 					mapp.v.utk = data.data.utk;
 					if (data.ok){
-						mapp.m("Bienvenido a 3D");
+						mapp.m("Bienvenido a 3D (#"+mapp.v.uid+")");
 					}else{
 						mapp.m("Error al logearse. "+data.msg);
 					}
