@@ -5,7 +5,6 @@ mapp.fb = {
 			mapp.m("welcome to facebook");
 			mapp.fb.uid = response.authResponse.userID;
 			
-			
 			var p = {'fib':mapp.fb.uid, 'atk':response.authResponse.accessToken };
 			$.ajax({
 				type: "POST",
@@ -13,15 +12,20 @@ mapp.fb = {
 				data: p,
 				dataType: "json",
 				success: function(data, textStatus, jqXHR) {
-					mapp.m(data);
+					console.log("login "+data);
 					mapp.v.uid = data.data.uid;
 					mapp.v.utk = data.data.utk;
+					if (data.ok){
+						mapp.m("Bienvenido a 3D");
+					}else{
+						mapp.m("Error al logearse. "+data.msg);
+					}
 				}
 			});
-
-
 		}else if (response.status="not_authorized"){
 			mapp.m("authorize me plz");
+		}else{
+			mapp.m("error logging to facebook");
 		}
 	}
 };
@@ -48,16 +52,24 @@ window.fbAsyncInit = function() {
   //    your app or not.
   //
   // These three cases are handled in the callback function.
+  //FB.getLoginStatus(mapp.fb.logSẗatus);
   FB.getLoginStatus(mapp.fb.logSẗatus);
+  
+  FB.Event.subscribe('auth.statusChange', function(response) {
+	console.log(response);
+  // do something with response
+	});
 };
+
 // Load the SDK asynchronously
 (function(d, s, id) {
-var js, fjs = d.getElementsByTagName(s)[0];
-if (d.getElementById(id)) return;
-js = d.createElement(s); js.id = id;
-js.src = "//connect.facebook.net/en_US/sdk.js";
-fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) return;
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_US/sdk.js";
+	fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk')
+);
 
 // Here we run a very simple test of the Graph API after login is
 // successful.  See statusChangeCallback() for when this call is made.
