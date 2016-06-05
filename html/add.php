@@ -14,6 +14,8 @@ ini_set('upload_max_filesize', '2M');
 		$lat = $_POST['lat'];
 		$lon = $_POST['lon'];
 		$acc = $_POST['acc'];
+		$uid = intval($_POST['uid']);
+		$utk = $_POST['utk'];
 		
 		if (!isset($_POST['descr']) || $_POST['descr'] == ""){ 
 			throw new Exception("La descripcion no puede estar vacia");
@@ -22,15 +24,29 @@ ini_set('upload_max_filesize', '2M');
 		$descr = $_POST['descr'];
 		$cat  = intval(get($_POST['cat'], 0));
 		
-		$sth = $conn->prepare('INSERT INTO issues(lat, lon, descr, acc, cat, state) VALUES (?, ?, ?, ?, ?, 0);');
-		$sth->bindParam(1, $lat, PDO::PARAM_INT);
-		$sth->bindParam(2, $lon, PDO::PARAM_INT);
-		$sth->bindParam(3, $descr, PDO::PARAM_STR, 255);
-		$sth->bindParam(4, $acc, PDO::PARAM_STR); //there's no PDO for decimal.... well done ph
-		$sth->bindParam(5, $cat, PDO::PARAM_INT);
+		//verify user
+		$sth = $conn->prepare('Select * from users where id = ? and utk = ? LIMIT 1;');
+		$sth->bindParam(1, $uid, PDO::PARAM_INT);
+		$sth->bindParam(2, $utk, PDO::PARAM_STR, 255);
 		
 		if (!$sth->execute()){
-			throw new Exception("".$sth->errorCode().": ".$sth->errorInfo() );
+			throw new Exception("Error authenticating: ".$sth->errorCode().": ".$sth->errorInfo() );
+		}
+		
+		if ($sth->rowCount()<1){
+			throw new Exception("User not logged : ".$sth->errorCode().": ".$sth->errorInfo() );
+		}
+		
+		$sth = $conn->prepare('INSERT INTO issues (uid, lat, lon, descr, acc, cat, state) VALUES (?, ?, ?, ?, ?, ?, 0);');
+		$sth->bindParam(1, $uid, PDO::PARAM_INT);
+		$sth->bindParam(2, $lat, PDO::PARAM_INT);
+		$sth->bindParam(3, $lon, PDO::PARAM_INT);
+		$sth->bindParam(4, $descr, PDO::PARAM_STR, 255);
+		$sth->bindParam(5, $acc, PDO::PARAM_STR); //there's no PDO for decimal.... well done ph
+		$sth->bindParam(6, $cat, PDO::PARAM_INT);
+		
+		if (!$sth->execute()){
+			throw new Exception("Error adding issue: ".$sth->errorCode().": ".$sth->errorInfo() );
 		}
 		
 		$idn = $conn->lastInsertId();

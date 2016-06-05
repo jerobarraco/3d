@@ -2,7 +2,7 @@ mapp.fb = {
 	uid:-1,
 	logSẗatus: function logSẗatus(response){
 		if (response.status == "connected"){
-			mapp.m("Conectado a FB.");
+			mapp.m("Conectado a FB");
 			mapp.fb.uid = response.authResponse.userID;
 			
 			var p = {'fid':mapp.fb.uid, 'atk':response.authResponse.accessToken };
@@ -12,7 +12,6 @@ mapp.fb = {
 				data: p,
 				dataType: "json",
 				success: function(data, textStatus, jqXHR) {
-					console.log("login "+data);
 					mapp.v.uid = data.data.uid;
 					mapp.v.utk = data.data.utk;
 					if (data.ok){

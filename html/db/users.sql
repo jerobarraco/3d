@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jun 05, 2016 at 05:34 PM
+-- Generation Time: Jun 05, 2016 at 06:23 PM
 -- Server version: 5.6.30
 -- PHP Version: 5.4.31
 
@@ -35,7 +35,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   KEY `utk` (`utk`),
   KEY `fid` (`fid`,`ftk`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `utk`, `fid`, `ftk`, `rep`) VALUES
+(2, 'cff8354cfea0940804d61f88afb5257e', '10207905168321590', 'EAAPYCOVNfocBAE8SMltyf9WlRGGNFRwbKtkv2ZAtjns05U4MzcVZC1DcSrwy07n2bcfCPu7fsLMMvREvX2QNyMPTq5KOKWZATUN7AEfhP682aDNoA9K3k4X3YIkZAzrtY7PNbGYnkPdyvhIxeZC6ZBwFqw7DazfZAuiE20UZB5ZBrKgZDZD', 0);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
