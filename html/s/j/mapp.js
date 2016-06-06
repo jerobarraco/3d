@@ -15,7 +15,8 @@ var mapp = {
 		marks: [], //markers
 		photo_bin: false, //is photo input file?
 		uid:0,
-		utk:0
+		utk:0,
+		b_fadd:0
 	},
 	m: function m(s){
 		mapp.v.m.innerHTML = s;
@@ -120,14 +121,14 @@ var mapp = {
 		mapp.update(null, true);
 	},
 	onFormShow: function onFormShow(ev){
-		$("#b_fadd").hide();
+		mapp.v.b_fadd.hide();
 		//mapp.v.cfpos = mapp.v.cpos;//dangerous! shared reference
 		//var cp = mapp.v.cpos;
 		//mapp.v.cfpos = [cp[0], cp[1], cp[2]];//store after the user take the picture
 		mapp.setPict();
 	},
 	onFormHide: function onFormHide(ev){
-		$("#b_fadd").show();
+		mapp.v.b_fadd.show();
 		mapp.closeCam();
 	},
 	showError:function showError(error) {
@@ -261,23 +262,24 @@ var mapp = {
 		$("#i_descr").focus();
 	},
 	onLoad: function onLoad(){ // execute when the DOM is fully loaded
+		mapp.v.follow = true;
 		mapp.v.m = document.getElementById("msg");
 		mapp.v.info = $("#mInfo");
 		mapp.v.infocnt = $("#mInfoBody");
 		mapp.v.infot = $("#mInfoTitle");
 		mapp.v.msel = $("#mMSel");
 		mapp.v.mselcnt = $("#mMSBody");
-		mapp.v.b_add = $("#b_fadd");
 		mapp.v.b_login = $("#b_login");
-		mapp.v.b_add.click(mapp.addIssue);
-		mapp.v.b_add.hide();
-
-		mapp.v.follow = true;
+		mapp.v.b_fadd = $("#b_fadd");
+		
+		mapp.v.b_fadd.hide();
 		$("#b_follow").hide();
+		
 		$('#frmAdd').on('shown.bs.modal', mapp.onFormShow);
 		$('#frmAdd').on('hidden.bs.modal', mapp.onFormHide);
 		$('#sel_cat_filter').change(mapp.onCatFilterChange);
 		$('#i_photo_bin')[0].onchange = mapp.storePos;
+		$("#b_add").click(mapp.addIssue);
 	
 		mapp.v.map = L.map('map-canvas').setView([0, 0], 17); // http://leafletjs.com/
 		// http://leafletjs.com/examples/mobile.html

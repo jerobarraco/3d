@@ -1,7 +1,7 @@
 mapp.fb = {
 	uid:-1,
 	logStatus: function logStatus(response){
-		mapp.v.b_add.hide();
+		mapp.v.b_fadd.hide();
 		mapp.v.b_login.show();
 		
 		if (response.status == "connected"){
@@ -19,7 +19,7 @@ mapp.fb = {
 					mapp.v.utk = data.data.utk;
 					if (data.ok){
 						mapp.m("Bienvenido a 3D (#"+mapp.v.uid+")");
-						mapp.v.b_add.show();
+						mapp.v.b_fadd.show();
 						mapp.v.b_login.hide();
 					}else{
 						mapp.m("Error al logearse. "+data.msg);
