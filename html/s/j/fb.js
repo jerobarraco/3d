@@ -1,6 +1,9 @@
 mapp.fb = {
 	uid:-1,
-	logSẗatus: function logSẗatus(response){
+	logStatus: function logStatus(response){
+		mapp.v.b_add.hide();
+		mapp.v.b_login.show();
+		
 		if (response.status == "connected"){
 			mapp.m("Conectado a FB");
 			mapp.fb.uid = response.authResponse.userID;
@@ -16,6 +19,8 @@ mapp.fb = {
 					mapp.v.utk = data.data.utk;
 					if (data.ok){
 						mapp.m("Bienvenido a 3D (#"+mapp.v.uid+")");
+						mapp.v.b_add.show();
+						mapp.v.b_login.hide();
 					}else{
 						mapp.m("Error al logearse. "+data.msg);
 					}
@@ -28,8 +33,6 @@ mapp.fb = {
 		}
 	}
 };
-
-
 
 window.fbAsyncInit = function() {
   FB.init({
@@ -51,13 +54,18 @@ window.fbAsyncInit = function() {
   //    your app or not.
   //
   // These three cases are handled in the callback function.
-  //FB.getLoginStatus(mapp.fb.logSẗatus);
-  FB.getLoginStatus(mapp.fb.logSẗatus);
   
-  FB.Event.subscribe('auth.statusChange', function(response) {
+  FB.Event.subscribe('auth.statusChange', function(response) { 
+  //FB.Event.subscribe('auth.authResponseChange', function(response) { 
+	console.log("Fb status changed");
 	console.log(response);
-  // do something with response
+	mapp.fb.logStatus(response);
+	// do something with response
 	});
+  //cuando inicia no comprueba el login automáticamente, debería lanzar el authResponseChange pero... así que llamamos esta porqueria
+  //probablemente termine llamando al logstatus 2wice
+  //efectivamente lo llama 2 veces, es una porquería de api.
+  FB.getLoginStatus();
 };
 
 // Load the SDK asynchronously

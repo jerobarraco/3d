@@ -267,9 +267,11 @@ var mapp = {
 		mapp.v.infot = $("#mInfoTitle");
 		mapp.v.msel = $("#mMSel");
 		mapp.v.mselcnt = $("#mMSBody");
-		
-		$("#b_add").click(mapp.addIssue);
-		
+		mapp.v.b_add = $("#b_fadd");
+		mapp.v.b_login = $("#b_login");
+		mapp.v.b_add.click(mapp.addIssue);
+		mapp.v.b_add.hide();
+
 		mapp.v.follow = true;
 		$("#b_follow").hide();
 		$('#frmAdd').on('shown.bs.modal', mapp.onFormShow);
