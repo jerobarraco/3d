@@ -286,7 +286,7 @@ var mapp = {
 		// https://github.com/leaflet-extras/leaflet-providers
 		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // http://www.openstreetmap.org/copyright
 			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-			maxZoom: 19, //20 is kinda too much
+			maxZoom: 20, //20 is kinda too much
 			reuseTiles: true //If true, all the tiles that are not visible after panning are placed in a reuse queue from which they will be fetched when new tiles become visible (as opposed to dynamically creating new ones). This will in theory keep memory usage low and eliminate the need for reserving new memory whenever a new tile is needed.
 			
 		}).addTo(mapp.v.map);
