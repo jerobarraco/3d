@@ -22,6 +22,7 @@ var mapp = {
 		mapp.v.m.innerHTML = s;
 		console.log(s);
 	},
+	
 	posChanged: function posChanged(ev){//updates current position
 		console.log("pos changed");
 		var lat = ev.latitude, lon = ev.longitude, acc = ev.accuracy,
@@ -34,6 +35,12 @@ var mapp = {
 		mapp.m(latlon);
 		mapp.v.cpos = [lat, lon, acc];
 		//mapp.showPosition(pos);//actually thanks to a good design i dont need this
+	},
+	delIssue: function delIssue(){
+		debugger;
+		$.js(
+			
+		);
 	},
 	doPostIssue: function doPostIssue(params){//i hate async stuff
 		params.uid = mapp.v.uid;
