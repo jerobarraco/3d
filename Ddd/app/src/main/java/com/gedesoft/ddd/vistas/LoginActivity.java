@@ -28,7 +28,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onSuccess(LoginResult loginResult) {
             Profile profile = Profile.getCurrentProfile();
-            nextActivity(profile);
+            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            nextActivity(profile, accessToken);
         }
 
         @Override
@@ -56,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                nextActivity(newProfile);
+                nextActivity(newProfile, AccessToken.getCurrentAccessToken());
             }
         };
         accessTokenTracker.startTracking();
@@ -69,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 AccessToken accessToken = loginResult.getAccessToken();
                 Profile profile = Profile.getCurrentProfile();
-                nextActivity(profile);
+                nextActivity(profile, accessToken);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this)
                         .setMessage(getString(R.string.validando_informacion_login))
@@ -92,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void nextActivity(Profile profile) {
+    private void nextActivity(Profile profile, AccessToken accessToken) {
         if (profile != null) {
             Intent main = new Intent(LoginActivity.this, MainActivity.class);
 
@@ -100,6 +101,8 @@ public class LoginActivity extends AppCompatActivity {
             main.putExtra("name", profile.getFirstName());
             main.putExtra("surname", profile.getLastName());
             main.putExtra("imageUrl", profile.getProfilePictureUri(200, 200).toString());
+            main.putExtra("token", accessToken.getToken());
+            main.putExtra("userID", accessToken.getUserId());
             startActivity(main);
         }
     }
@@ -108,8 +111,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //Facebook login
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Profile profile = Profile.getCurrentProfile();
-        nextActivity(profile);
+        nextActivity(profile, accessToken);
     }
 
     @Override

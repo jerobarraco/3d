@@ -42,4 +42,6 @@
     <string name="menu_perfil">Mi Perfil</string>
     <string name="tu_perfil">Tu perfil</string>
     <string name="menu_filtrar">Filtrar</string>
+    <string name="agregar_habla_ahora">Habla ahora</string>
+    <string name="agregar_error_funcion_hablar">Lo sentimos, tu dispositivo no soporta esta función</string>
 </resources>

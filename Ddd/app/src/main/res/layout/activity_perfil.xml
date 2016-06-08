@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.gedesoft.ddd.vistas.Perfil">
+    tools:context="com.gedesoft.ddd.vistas.Perfil"
+    >
 
 
     <android.support.v7.widget.Toolbar
@@ -44,4 +49,21 @@
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:text="Token"
+        android:id="@+id/txtPerfilToken"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:text="User ID"
+        android:id="@+id/txtPerfilUserID"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
+</ScrollView>

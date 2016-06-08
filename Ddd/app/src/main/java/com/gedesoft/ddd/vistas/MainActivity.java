@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double sur;
     private double oeste;
     private int acc;
-    private int categoria=-1;
+
     private FloatingActionButton mFloatingActionButton;
     private Marker lastOpenned = null;
     private ImageView imgInfoWindow;
@@ -73,6 +73,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String name;
     String surname;
     String imageUrl;
+    String token;
+    String userid;
+
+
+   // int catesave;
+
+   SharedPreferences sharedPreferences2;
+    SharedPreferences.Editor editor2;
+    SharedPreferences saved2;
+
+
+    private int categoria;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +93,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        //Datos de Facebook
 
+        //Categoría inicial
+        sharedPreferences2 = getPreferences(Context.MODE_PRIVATE);
+        editor2 = sharedPreferences2.edit();
+        saved2 = getPreferences(Context.MODE_PRIVATE);
+        categoria = sharedPreferences2.getInt("categoria", 0);
+        if (categoria <= 0){
+            categoria = -1;
+        }else {
+            categoria = sharedPreferences2.getInt("categoria", 0);
+        }
+
+        //Datos de Facebook
         Bundle inBundle = getIntent().getExtras();
         if (inBundle == null){
 
@@ -91,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             name = inBundle.get("name").toString();
             surname = inBundle.get("surname").toString();
             imageUrl = inBundle.get("imageUrl").toString();
+            token = inBundle.get("token").toString();
+            userid = inBundle.get("userID").toString();
+
         }
 
 
@@ -512,6 +538,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             intent.putExtra(Perfil.SURNAME, surname);
             intent.putExtra(Perfil.ID, this.id);
             intent.putExtra(Perfil.IMG, imageUrl);
+            intent.putExtra(Perfil.TOKEN, token);
+            intent.putExtra(Perfil.USERID, userid);
             startActivity(intent);
             return true;
         }
@@ -537,15 +565,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             //Aquí guardo la selección del usuario
             RadioGroup group = (RadioGroup) view.findViewById(R.id.rdgGrupo);
-            SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+           SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
             final SharedPreferences.Editor editor = sharedPreferences.edit();
             SharedPreferences saved = getPreferences(Context.MODE_PRIVATE);
+
             int radioId=sharedPreferences.getInt("check", 0);
             if(radioId>0){
                 RadioButton rbtn=(RadioButton)view.findViewById(radioId);
                 rbtn.setChecked(true);
             }
             //fin
+
+
 
             group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
@@ -554,51 +585,61 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     switch (checkedId){
                         case R.id.radio_button_animales:
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", 1);
                             categoria = 1;
                             refrescarMapa();
                             break;
                         case R.id.radio_button_ambientales:
                             categoria = 2;
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", 2);
                             refrescarMapa();
                             break;
                         case R.id.radio_button_policiales:
                             categoria = 3;
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", 3);
                             refrescarMapa();
                             break;
                         case R.id.radio_button_legales:
                             categoria = 4;
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", 4);
                             refrescarMapa();
                             break;
                         case R.id.radio_button_servicios:
                             categoria = 5;
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", 5);
                             refrescarMapa();
                             break;
                         case R.id.radio_button_sociales:
                             categoria = 6;
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", 6);
                             refrescarMapa();
                             break;
                         case R.id.radio_button_negocios:
                             categoria = 7;
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", 7);
                             refrescarMapa();
                             break;
                         case R.id.radio_button_emergencias:
                             categoria = 8;
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", 8);
                             refrescarMapa();
                             break;
                         case R.id.radio_button_todos:
                             categoria = -1;
                             editor.putInt("check", checkedId);
+                            editor2.putInt("categoria", -1);
                             refrescarMapa();
                             break;
                     }
                     editor.apply();
+                    editor2.apply();
                 }
             });
 

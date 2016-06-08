@@ -16,10 +16,12 @@ public class Perfil extends AppCompatActivity {
     public static final String SURNAME ="Surname";
     public static final String ID = "ID";
     public static final String IMG = "Imagen";
+    public static final String TOKEN = "Token";
+    public static final String USERID = "UserID";
 
 
     private TextView txtName;
-    private TextView txtID;
+    private TextView txtID, txtToken, txtUserId;
     private ImageView mImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,8 @@ public class Perfil extends AppCompatActivity {
         txtName = (TextView) findViewById(R.id.txtPerfilNombre);
         txtID = (TextView) findViewById(R.id.txtPerfilId);
         mImageView = (ImageView) findViewById(R.id.txtPerfilImagen);
+        txtToken = (TextView) findViewById(R.id.txtPerfilToken);
+        txtUserId = (TextView) findViewById(R.id.txtPerfilUserID);
 
         Bundle inBundle = getIntent().getExtras();
         if (inBundle.containsKey(Perfil.NAME) && inBundle.containsKey(Perfil.SURNAME) && inBundle.containsKey(Perfil.ID)
@@ -41,10 +45,14 @@ public class Perfil extends AppCompatActivity {
             String name = inBundle.get(Perfil.NAME).toString();
             String surname = inBundle.get(Perfil.SURNAME).toString();
             String imageUrl = inBundle.get(Perfil.IMG).toString();
+            String token = inBundle.get(Perfil.TOKEN).toString();
+            String userid = inBundle.get(Perfil.USERID).toString();
 
             txtName.setText("Nombre: " + name + " " + surname);
             txtID.setText("Id cuenta " + " " + ide);
             Picasso.with(this).load(imageUrl).into(mImageView);
+            txtToken.setText("Token " + token);
+            txtUserId.setText("User ID " + userid);
 
         }else {
             Toast.makeText(Perfil.this, "Vacío", Toast.LENGTH_SHORT).show();

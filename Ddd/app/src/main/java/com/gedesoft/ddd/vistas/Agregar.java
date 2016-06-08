@@ -1,12 +1,15 @@
 package com.gedesoft.ddd.vistas;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,10 +26,12 @@ import com.gedesoft.ddd.R;
 import com.gedesoft.ddd.modelos.PostAsync;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class Agregar extends AppCompatActivity {
 
-    private Button enviar, bFoto, cancelar;
+    private Button enviar, bFoto, cancelar, hablar;
     private EditText mEditText;
     final static int REQUEST_IMAGE_CAMERA = 1;
     private ImageView pic;
@@ -46,6 +51,14 @@ public class Agregar extends AppCompatActivity {
         mEditText = (EditText) findViewById(R.id.editText_Descrip);
         bFoto = (Button) findViewById(R.id.button_foto);
         pic = (ImageView) findViewById(R.id.Imagen_agregar);
+        hablar = (Button) findViewById(R.id.btnSpech);
+
+        hablar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requerirHablar();
+            }
+        });
 
         pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,9 +119,6 @@ public class Agregar extends AppCompatActivity {
 
                         mEditText.setText("");
 
-
-
-
                     }
                 }catch (Exception e){
                     e.printStackTrace();
@@ -139,9 +149,28 @@ public class Agregar extends AppCompatActivity {
     }
 
 
+    public void requerirHablar(){
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        i.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.agregar_habla_ahora));
+
+        try{
+            startActivityForResult(i, 100);
+        }catch (ActivityNotFoundException e){
+            e.printStackTrace();
+            Snackbar.make(findViewById(android.R.id.content), R.string.agregar_error_funcion_hablar, Snackbar.LENGTH_SHORT).show();
+        }
+
+    }
+
     private boolean hasCamera() {
 
-        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+        }else {
+            return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+        }
     }
 
     @Override
@@ -156,6 +185,15 @@ public class Agregar extends AppCompatActivity {
             byte[] imageBytes =  baos.toByteArray();
             encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         }
+
+        if (requestCode==100 && resultCode==RESULT_OK && data != null){
+
+            ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            mEditText.setText(result.get(0));
+        }
     }
+
+
+
 }
 

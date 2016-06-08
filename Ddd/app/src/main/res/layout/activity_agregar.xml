@@ -65,6 +65,13 @@
                 android:maxLines="1"
 
                 />
+
+            <Button
+                android:id="@+id/btnSpech"
+                android:text="hablar"
+                android:theme="@style/Botones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
