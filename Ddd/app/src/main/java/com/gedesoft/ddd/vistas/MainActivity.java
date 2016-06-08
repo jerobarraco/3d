@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Criteria;
@@ -25,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
@@ -64,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker lastOpenned = null;
     private ImageView imgInfoWindow;
     private Hashtable<String, MarcadoresDatos> mapa = new Hashtable<>();
-
 
     //bundle info facebook
     String id;
@@ -313,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     sur = curScreen.southwest.latitude;
                     oeste = curScreen.southwest.longitude;
                     MarcadoresAsync marcadoresAsync = new MarcadoresAsync(mapReady, mMap, MainActivity.this, mapa);
-                    marcadoresAsync.execute("http://test.grapot.co/q.php?n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste + "&cat=" + categoria);
+                    marcadoresAsync.execute("http://test.grapot.co/q.php?cat=" + categoria + "&n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste);
                 }
             });
 
@@ -501,13 +503,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-
+         int id = item.getItemId();
 
         if (id == R.id.action_perfil) {
             Intent intent = new Intent(this, Perfil.class);
@@ -524,6 +521,92 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return true;
         }
 
+        if (id== R.id.action_filter){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater factory = LayoutInflater.from(this);
+            final View view = factory.inflate(R.layout.menu_filter_layout, null);
+            builder.setView(view);
+            builder.setTitle("Selecciona la categoría a filtrar");
+            builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+
+            //Aquí guardo la selección del usuario
+            RadioGroup group = (RadioGroup) view.findViewById(R.id.rdgGrupo);
+            SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+            final SharedPreferences.Editor editor = sharedPreferences.edit();
+            SharedPreferences saved = getPreferences(Context.MODE_PRIVATE);
+            int radioId=sharedPreferences.getInt("check", 0);
+            if(radioId>0){
+                RadioButton rbtn=(RadioButton)view.findViewById(radioId);
+                rbtn.setChecked(true);
+            }
+            //fin
+
+            group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                    switch (checkedId){
+                        case R.id.radio_button_animales:
+                            editor.putInt("check", checkedId);
+                            categoria = 1;
+                            refrescarMapa();
+                            break;
+                        case R.id.radio_button_ambientales:
+                            categoria = 2;
+                            editor.putInt("check", checkedId);
+                            refrescarMapa();
+                            break;
+                        case R.id.radio_button_policiales:
+                            categoria = 3;
+                            editor.putInt("check", checkedId);
+                            refrescarMapa();
+                            break;
+                        case R.id.radio_button_legales:
+                            categoria = 4;
+                            editor.putInt("check", checkedId);
+                            refrescarMapa();
+                            break;
+                        case R.id.radio_button_servicios:
+                            categoria = 5;
+                            editor.putInt("check", checkedId);
+                            refrescarMapa();
+                            break;
+                        case R.id.radio_button_sociales:
+                            categoria = 6;
+                            editor.putInt("check", checkedId);
+                            refrescarMapa();
+                            break;
+                        case R.id.radio_button_negocios:
+                            categoria = 7;
+                            editor.putInt("check", checkedId);
+                            refrescarMapa();
+                            break;
+                        case R.id.radio_button_emergencias:
+                            categoria = 8;
+                            editor.putInt("check", checkedId);
+                            refrescarMapa();
+                            break;
+                        case R.id.radio_button_todos:
+                            categoria = -1;
+                            editor.putInt("check", checkedId);
+                            refrescarMapa();
+                            break;
+                    }
+                    editor.apply();
+                }
+            });
+
+            AlertDialog levelDialog  = builder.create();
+            levelDialog.show();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -532,6 +615,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent login = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(login);
         finish();
+    }
+
+    public void refrescarMapa(){
+        MarcadoresAsync marcadoresAsync = new MarcadoresAsync(mapReady, mMap, MainActivity.this, mapa);
+        marcadoresAsync.execute("http://test.grapot.co/q.php?cat=" + categoria + "&n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste);
     }
 }
 

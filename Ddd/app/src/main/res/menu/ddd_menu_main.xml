@@ -14,5 +14,11 @@
         android:title="@string/logout"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="@string/menu_filtrar"
+        app:showAsAction="ifRoom"/>
+
 
 </menu>

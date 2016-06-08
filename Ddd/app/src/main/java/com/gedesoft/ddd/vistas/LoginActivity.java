@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
                 AccessToken accessToken = loginResult.getAccessToken();
                 Profile profile = Profile.getCurrentProfile();
                 nextActivity(profile);
-               // Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this)
                         .setMessage(getString(R.string.validando_informacion_login))

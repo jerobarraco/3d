@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup
+    android:id="@+id/rdgGrupo"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_column="0"
+    android:layout_span="3"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <RadioButton
+        android:id="@+id/radio_button_animales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/animales_categoria"
+        />
+
+    <RadioButton
+        android:id="@+id/radio_button_ambientales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ambientales_categoria"/>
+
+    <RadioButton
+        android:id="@+id/radio_button_policiales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/policiales_categoria"/>
+
+    <RadioButton
+        android:id="@+id/radio_button_legales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/legales_categoria"/>
+
+    <RadioButton
+        android:id="@+id/radio_button_servicios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/servicios_categoria"/>
+    <RadioButton
+        android:id="@+id/radio_button_sociales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sociales_categoria"/>
+    <RadioButton
+        android:id="@+id/radio_button_negocios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/negocios_categoria"/>
+    <RadioButton
+        android:id="@+id/radio_button_emergencias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/emergencias_categoria"/>
+    <RadioButton
+        android:id="@+id/radio_button_todos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Todas"/>
+
+</RadioGroup>

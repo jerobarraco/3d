@@ -41,4 +41,5 @@
     <string name="generando_marcador_postasync">Generando marcador, por favor espera</string>
     <string name="menu_perfil">Mi Perfil</string>
     <string name="tu_perfil">Tu perfil</string>
+    <string name="menu_filtrar">Filtrar</string>
 </resources>
