@@ -102,6 +102,9 @@ public class Agregar extends AppCompatActivity {
         final double longi = bundle.getDouble("Longitud");
         final int acc = bundle.getInt("Acc");
         final int cate = bundle.getInt("Categoria");
+        final int idPhP = bundle.getInt("IDPHP");
+        final String utk = bundle.getString("UTK");
+
 
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +118,8 @@ public class Agregar extends AppCompatActivity {
                     }else {
                         String method = "info";
                         PostAsync postAsync = new PostAsync(Agregar.this, Agregar.this);
-                        postAsync.execute(method, textoMarcador, Double.toString(lati), Double.toString(longi), Integer.toString(acc), encodedImage, Integer.toString(cate));
+                        postAsync.execute(method, textoMarcador, Double.toString(lati), Double.toString(longi), Integer.toString(acc), encodedImage, Integer.toString(cate)
+                        ,Integer.toString(idPhP), utk);
 
                         mEditText.setText("");
 

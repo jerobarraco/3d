@@ -49,21 +49,7 @@
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:text="Token"
-        android:id="@+id/txtPerfilToken"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_height="wrap_content"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:text="User ID"
-        android:id="@+id/txtPerfilUserID"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_height="wrap_content"/>
 
 </LinearLayout>
 </ScrollView>

@@ -32,7 +32,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by Jonny on 29/05/2016.
  */
-public class PostAsync extends AsyncTask<String, Void, String> {
+public class PostAsync extends AsyncTask<String, Void, JSONObject> {
 
     Context mContext;
     private ProgressDialog dialog;
@@ -46,7 +46,7 @@ public class PostAsync extends AsyncTask<String, Void, String> {
 
 
     @Override
-    protected String doInBackground(String... params) {
+    protected JSONObject doInBackground(String... params) {
 
         String info_URL = "http://test.grapot.co/add.php";
         String method = params[0];
@@ -57,7 +57,8 @@ public class PostAsync extends AsyncTask<String, Void, String> {
             String acc = params[4];
             String f64 = params[5];
             String cat = params[6];
-
+            String uid = params[7];
+            String utk = params[8];
             try {
                 URL url = new URL(info_URL);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -72,6 +73,8 @@ public class PostAsync extends AsyncTask<String, Void, String> {
                         URLEncoder.encode("lon", "UTF-8")+"="+URLEncoder.encode(lon, "UTF-8")+"&"+
                         URLEncoder.encode("acc", "UTF-8")+"="+URLEncoder.encode(acc, "UTF-8")+"&"+
                         URLEncoder.encode("cat", "UTF-8")+"="+URLEncoder.encode(cat, "UTF-8")+"&"+
+                        URLEncoder.encode("uid", "UTF-8")+"="+URLEncoder.encode(uid, "UTF-8")+"&"+
+                        URLEncoder.encode("utk", "UTF-8")+"="+URLEncoder.encode(utk, "UTF-8")+"&"+
                         URLEncoder.encode("f64", "UTF-8")+"="+URLEncoder.encode(f64, "UTF-8");
 
                 writer.write(data);
@@ -81,21 +84,18 @@ public class PostAsync extends AsyncTask<String, Void, String> {
                 int responseCode=connection.getResponseCode();
 
 
-                String response = "{ok:false}";
+                String response = "{ok:false, msg:'error en http'}";
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
                     response = "";
                     String line;
-                    BufferedReader br=new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    while ((line=br.readLine()) != null) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    while ((line = br.readLine()) != null) {
                         response += line;
                     }
                 }
                 JSONObject washo = new JSONObject(response);
-                if (washo.getBoolean("ok")){
-                    return "Envío exitoso";
-                }else{
-                    return "Error "+washo.getString("msg");
-                }
+                return washo;
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -104,18 +104,35 @@ public class PostAsync extends AsyncTask<String, Void, String> {
                 e.printStackTrace();
             }
         }
-
         return null;
     }
 
     @Override
-    protected void onPostExecute(String res) {
+    protected void onPostExecute(JSONObject res) {
         super.onPostExecute(res);
         if (dialog.isShowing()) {
             dialog.dismiss();
         }
 
-        if(res != null){
+        String mensaje = "";
+        boolean ok = false;
+        if(res== null){
+            mensaje = "Error desconocido";
+
+        }else{
+            try {
+                if(!res.getBoolean("ok")){
+                    mensaje = res.getString("msg");
+                }else{
+                    ok = true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        if(ok){
             final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                     .setTitle(mContext.getString(R.string.exito_postasync))
                     .setMessage(mContext.getString(R.string.exito_compartir_face_postasync))
@@ -148,7 +165,7 @@ public class PostAsync extends AsyncTask<String, Void, String> {
         }else {
             final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                     .setTitle(mContext.getString(R.string.error_operacion_postasync))
-                    .setMessage(mContext.getString(R.string.verificagpsinternet_postasync))
+                    .setMessage(  mContext.getString(R.string.verificagpsinternet_postasync)+"\n"+mensaje)
                     .setCancelable(false)
                     .setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
                         @Override

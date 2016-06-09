@@ -35,6 +35,7 @@ import com.facebook.login.LoginManager;
 import com.gedesoft.ddd.R;
 import com.gedesoft.ddd.modelos.MarcadoresAsync;
 import com.gedesoft.ddd.modelos.MarcadoresDatos;
+import com.gedesoft.ddd.modelos.UsuariosAsync;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -75,11 +76,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String imageUrl;
     String token;
     String userid;
+    String utk;
+    int idPHP;
 
-
-   // int catesave;
-
-   SharedPreferences sharedPreferences2;
+    SharedPreferences sharedPreferences2;
     SharedPreferences.Editor editor2;
     SharedPreferences saved2;
 
@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 intent2.putExtra("Latitud", lat);
                 intent2.putExtra("Longitud", lng);
                 intent2.putExtra("Acc", acc);
+                intent2.putExtra("Utk", utk);
+                intent2.putExtra("Idphp", idPHP);
                 startActivity(intent2);
             }
         });
@@ -155,6 +157,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_Fragment);
         mapFragment.getMapAsync(this);
+
+        UsuariosAsync async = new UsuariosAsync(MainActivity.this);
+        async.execute(token, id);
 
     }
 
@@ -538,8 +543,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             intent.putExtra(Perfil.SURNAME, surname);
             intent.putExtra(Perfil.ID, this.id);
             intent.putExtra(Perfil.IMG, imageUrl);
-            intent.putExtra(Perfil.TOKEN, token);
-            intent.putExtra(Perfil.USERID, userid);
             startActivity(intent);
             return true;
         }
@@ -661,6 +664,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void refrescarMapa(){
         MarcadoresAsync marcadoresAsync = new MarcadoresAsync(mapReady, mMap, MainActivity.this, mapa);
         marcadoresAsync.execute("http://test.grapot.co/q.php?cat=" + categoria + "&n=" + norte + "&e=" + este + "&s=" + sur + "&w=" + oeste);
+    }
+
+
+    public void processFinish(String futk, int fid) {
+
+            utk = futk;
+
+            idPHP = fid;
+
     }
 }
 

@@ -45,14 +45,11 @@ public class Perfil extends AppCompatActivity {
             String name = inBundle.get(Perfil.NAME).toString();
             String surname = inBundle.get(Perfil.SURNAME).toString();
             String imageUrl = inBundle.get(Perfil.IMG).toString();
-            String token = inBundle.get(Perfil.TOKEN).toString();
-            String userid = inBundle.get(Perfil.USERID).toString();
+
 
             txtName.setText("Nombre: " + name + " " + surname);
             txtID.setText("Id cuenta " + " " + ide);
             Picasso.with(this).load(imageUrl).into(mImageView);
-            txtToken.setText("Token " + token);
-            txtUserId.setText("User ID " + userid);
 
         }else {
             Toast.makeText(Perfil.this, "Vacío", Toast.LENGTH_SHORT).show();

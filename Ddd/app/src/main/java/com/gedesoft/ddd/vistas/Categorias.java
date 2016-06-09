@@ -21,7 +21,8 @@ public class Categorias extends AppCompatActivity implements AdaptadorCategorias
     private ArrayList<com.gedesoft.ddd.modelos.Categorias> mCategoriases = new ArrayList<>();
     double Latitud;
     double Longitud;
-    int acc;
+    int acc, idphp;
+    String utk;
 
 
     @Override
@@ -40,7 +41,8 @@ public class Categorias extends AppCompatActivity implements AdaptadorCategorias
             Latitud = bundle.getDouble("Latitud");
             Longitud = bundle.getDouble("Longitud");
             acc = bundle.getInt("Acc");
-
+            utk = bundle.getString("Utk");
+            idphp = bundle.getInt("Idphp");
 
         }
 
@@ -90,6 +92,8 @@ public class Categorias extends AppCompatActivity implements AdaptadorCategorias
             intent.putExtra("Longitud", Longitud);
             intent.putExtra("Acc", acc);
             intent.putExtra("Categoria", cateActual.getCategoria());
+            intent.putExtra("UTK", utk);
+            intent.putExtra("IDPHP", idphp);
             startActivity(intent);
             finish();
         }
