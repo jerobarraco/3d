@@ -296,7 +296,7 @@ var mapp = {
 			//.bindPopup("#"+place.idn + ": " + place.descr);
 		mark.data = { 
 			idn: parseInt(place.idn), descr:place.descr, score:parseInt(place.score),
-			cat: parseInt(place.cat), state:parseInt(place.int)
+			cat: parseInt(place.cat), state:parseInt(place.state), mine:!!place.mine
 		};
 		mark.on("click", mapp.showInfo);
 		mapp.v.mg.addLayer(mark);
@@ -318,7 +318,7 @@ var mapp = {
 		for (var j = 0; j < data.length; j++){
 			fi = -1;
 			for (i= 0; i < old.length;i++){
-				if (data[j].idn == old[i].idn){
+				if (data[j].idn == old[i].data.idn){
 					fi = i;
 					break;
 				}
@@ -326,6 +326,7 @@ var mapp = {
 			if (fi<0){//not found 
 				mapp.addMarker(data[j]);//adds to oms and markers and CREATES a new "Marker" (gugel data type)
 			}else{
+				old[fi].data.mine = !!data[j].mine; //update the mine flag, because we can get unlogged at any time
 				mapp.v.marks.push(old[fi]);
 				old.splice(fi, 1);
 			}
@@ -351,6 +352,7 @@ var mapp = {
 		mapp.v.info_iid = mark.data.idn;
 		mapp.v.infot.html(tit);
 		mapp.v.infocnt.html(res);
+		mapp.v.b_i_del.prop('disabled', !mark.data.mine);//if its not mine, can't delete
 		mapp.v.info.modal();
 	},
 	loadCategories: function loadCategories(){

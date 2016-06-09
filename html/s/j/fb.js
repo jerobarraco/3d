@@ -21,6 +21,7 @@ mapp.fb = {
 						mapp.m("Bienvenido a 3D (#"+mapp.v.uid+")");
 						mapp.v.b_fadd.show();
 						mapp.v.b_login.hide();
+						mapp.update(null, true); //might waste data, but will update the mine flag
 					}else{
 						mapp.m("Error al logearse. "+data.msg);
 					}
