@@ -16,7 +16,10 @@ var mapp = {
 		photo_bin: false, //is photo input file?
 		uid:0,
 		utk:0,
-		b_fadd:0
+		info_iid:-1,
+		b_fadd:0,
+		cache_ajax:true
+		
 	},
 	m: function m(s){
 		mapp.v.m.innerHTML = s;
@@ -37,10 +40,15 @@ var mapp = {
 		//mapp.showPosition(pos);//actually thanks to a good design i dont need this
 	},
 	delIssue: function delIssue(){
-		debugger;
-		$.js(
-			
-		);
+		var iid = mapp.v.info_iid;
+		var params = {
+			uid: mapp.v.uid,
+			utk: mapp.v.utk,
+			iid: iid
+		};
+		$.js("del.php", params, true, function(lol){
+			mapp.m("Issue #"+iid+ " eliminado");
+		});
 	},
 	doPostIssue: function doPostIssue(params){//i hate async stuff
 		params.uid = mapp.v.uid;
@@ -268,54 +276,6 @@ var mapp = {
 		$("#snap").click(mapp.setPict);
 		$("#i_descr").focus();
 	},
-	onLoad: function onLoad(){ // execute when the DOM is fully loaded
-		mapp.v.follow = true;
-		mapp.v.m = document.getElementById("msg");
-		mapp.v.info = $("#mInfo");
-		mapp.v.infocnt = $("#mInfoBody");
-		mapp.v.infot = $("#mInfoTitle");
-		mapp.v.msel = $("#mMSel");
-		mapp.v.mselcnt = $("#mMSBody");
-		mapp.v.b_login = $("#b_login");
-		mapp.v.b_fadd = $("#b_fadd");
-		
-		mapp.v.b_fadd.hide();
-		$("#b_follow").hide();
-		
-		$('#frmAdd').on('shown.bs.modal', mapp.onFormShow);
-		$('#frmAdd').on('hidden.bs.modal', mapp.onFormHide);
-		$('#sel_cat_filter').change(mapp.onCatFilterChange);
-		$('#i_photo_bin')[0].onchange = mapp.storePos;
-		$("#b_add").click(mapp.addIssue);
-	
-		mapp.v.map = L.map('map-canvas').setView([0, 0], 17); // http://leafletjs.com/
-		// http://leafletjs.com/examples/mobile.html
-		// https://github.com/leaflet-extras/leaflet-providers
-		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // http://www.openstreetmap.org/copyright
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-			maxZoom: 20, //20 is kinda too much
-			reuseTiles: true //If true, all the tiles that are not visible after panning are placed in a reuse queue from which they will be fetched when new tiles become visible (as opposed to dynamically creating new ones). This will in theory keep memory usage low and eliminate the need for reserving new memory whenever a new tile is needed.
-			
-		}).addTo(mapp.v.map);
-		
-		var locopts = { // https://github.com/domoritz/leaflet-locatecontrol
-			position: 'topleft',
-			setView: 'untilPan',
-			keepCurrentZoomLevel: true,
-			strings: {
-				title: "Show me where I am, yo!"
-			}
-		};
-		
-		L.control.locate(locopts).addTo(mapp.v.map).start();
-		mapp.v.mg = L.markerClusterGroup();
-		mapp.v.map.addLayer(mapp.v.mg);
-		mapp.v.map.on('locationerror', function(e){ mapp.m( "GPS Error: "+ e.message) });
-		mapp.v.map.on('moveend', mapp.update); //magic event handles drag, pan, zoom i love leaflet so far
-		mapp.v.map.on('locationfound', mapp.posChanged);
-		
-		mapp.loadCategories();
-	},
 	addMarker: function addMarker(place){ // Adds marker for place to map.
 		//var mark  = L.marker([parseFloat(place.lat), parseFloat(place.lon)]).addTo(mapp.v.map)
 		var mopts = {
@@ -381,8 +341,10 @@ var mapp = {
 		res += '<div><h4>'+mark.data.descr+'</h4></div>';
 		var tit = "";
 		tit += '<img src="s/ii/cats/'+mark.data.cat+'.png" alt="'+mapp.v.cats[mark.data.cat]+'">';
-		tit += "Evento <a href='#'>#"+mark.data.idn+" <span class='badge'>"+mark.data.score+'</span></a>';
+		tit += "Evento <a href='#' id='info_iid' idn='"+mark.data.idn+"'>#"+mark.data.idn;
+		tit += " <span class='badge'>"+mark.data.score+'</span></a>';
 		
+		mapp.v.info_iid = mark.data.idn;
 		mapp.v.infot.html(tit);
 		mapp.v.infocnt.html(res);
 		mapp.v.info.modal();
@@ -417,6 +379,56 @@ var mapp = {
 		var cp = mapp.v.cpos;
 		mapp.v.cfpos = [cp[0], cp[1], cp[2]];
 		mapp.m("Posición: "+mapp.v.cfpos);
+	},
+	onLoad: function onLoad(){ // execute when the DOM is fully loaded
+		mapp.v.follow = true;
+		mapp.v.m = document.getElementById("msg");
+		mapp.v.info = $("#mInfo");
+		mapp.v.infocnt = $("#mInfoBody");
+		mapp.v.infot = $("#mInfoTitle");
+		mapp.v.msel = $("#mMSel");
+		mapp.v.mselcnt = $("#mMSBody");
+		mapp.v.b_login = $("#b_login");
+		mapp.v.b_i_del = $("#b_i_del");
+		mapp.v.b_fadd = $("#b_fadd");
+		
+		mapp.v.b_fadd.hide();
+		$("#b_follow").hide();
+		
+		$('#frmAdd').on('shown.bs.modal', mapp.onFormShow);
+		$('#frmAdd').on('hidden.bs.modal', mapp.onFormHide);
+		$('#sel_cat_filter').change(mapp.onCatFilterChange);
+		$('#i_photo_bin')[0].onchange = mapp.storePos;
+		$("#b_add").click(mapp.addIssue);
+		mapp.v.b_i_del.click(mapp.delIssue);
+	
+		mapp.v.map = L.map('map-canvas').setView([0, 0], 17); // http://leafletjs.com/
+		// http://leafletjs.com/examples/mobile.html
+		// https://github.com/leaflet-extras/leaflet-providers
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // http://www.openstreetmap.org/copyright
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+			maxZoom: 20, //20 is kinda too much
+			reuseTiles: true //If true, all the tiles that are not visible after panning are placed in a reuse queue from which they will be fetched when new tiles become visible (as opposed to dynamically creating new ones). This will in theory keep memory usage low and eliminate the need for reserving new memory whenever a new tile is needed.
+			
+		}).addTo(mapp.v.map);
+		
+		var locopts = { // https://github.com/domoritz/leaflet-locatecontrol
+			position: 'topleft',
+			setView: 'untilPan',
+			keepCurrentZoomLevel: true,
+			strings: {
+				title: "Show me where I am, yo!"
+			}
+		};
+		
+		L.control.locate(locopts).addTo(mapp.v.map).start();
+		mapp.v.mg = L.markerClusterGroup();
+		mapp.v.map.addLayer(mapp.v.mg);
+		mapp.v.map.on('locationerror', function(e){ mapp.m( "GPS Error: "+ e.message) });
+		mapp.v.map.on('moveend', mapp.update); //magic event handles drag, pan, zoom i love leaflet so far
+		mapp.v.map.on('locationfound', mapp.posChanged);
+		
+		mapp.loadCategories();
 	}
 };
 

@@ -37,6 +37,7 @@
 	}
 
 	function isLogged($uid, $utk){
+		global $conn;
 		$sth = $conn->prepare('Select * from users where id = ? and utk = ? LIMIT 1;');
 		$sth->bindParam(1, $uid, PDO::PARAM_INT);
 		$sth->bindParam(2, $utk, PDO::PARAM_STR, 255);
