@@ -2,7 +2,7 @@ mapp.fb = {
 	uid:-1,
 	logStatus: function logStatus(response){
 		mapp.v.b_fadd.hide();
-		mapp.v.b_login.show();
+		//mapp.v.b_login.show();
 		
 		if (response.status == "connected"){
 			mapp.m("Conectado a FB");
@@ -20,7 +20,7 @@ mapp.fb = {
 					if (data.ok){
 						mapp.m("Bienvenido a 3D (#"+mapp.v.uid+")");
 						mapp.v.b_fadd.show();
-						mapp.v.b_login.hide();
+						//mapp.v.b_login.hide();
 						mapp.update(null, true); //might waste data, but will update the mine flag
 					}else{
 						mapp.m("Error al logearse. "+data.msg);

@@ -398,7 +398,7 @@ var mapp = {
 		mapp.v.b_i_del = $("#b_i_del");
 		mapp.v.b_fadd = $("#b_fadd");
 		
-		mapp.v.b_fadd.hide();
+		//mapp.v.b_fadd.hide();
 		$("#b_follow").hide();
 		
 		$('#frmAdd').on('shown.bs.modal', mapp.onFormShow);
