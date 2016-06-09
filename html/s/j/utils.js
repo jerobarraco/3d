@@ -50,13 +50,13 @@ $.getScript2 = function(file, onsuccess, onerror){
 $.js = function(url, data, post, success, error){
 	if (isNone(error)){
 		error = function(json, suc, h){
-			if (!(isNone(json) || isNone(json.success))){
-				if(!json.success){//error logico
-					mapp.m('('+h.status+') '+json.error);
+			if (!(isNone(json) || isNone(json.ok))){
+				if(!json.ok){//error logico
+					mapp.m('('+h.status+') '+json.msg);
 					return;
 				}
 			}
-			mapp.m(_iz.common.error + h.status);
+			mapp.m("Error: " + h.status);
 		};
 	}
 	
@@ -79,7 +79,7 @@ $.js = function(url, data, post, success, error){
 		if (h.status != 200){ //error interno //json puede ser invalido (si es que aca llegan los cods != 200
 			handleError(json, suc, h);
 			return;
-		}else if (!json.success){
+		}else if (!json.ok){
 			handleError(json, suc, h);
 			return;
 		}
@@ -89,7 +89,7 @@ $.js = function(url, data, post, success, error){
 	$.ajax({
 		//cache:false,
 		dataType: "json",
-		type : post?'POST':'GET',
+		type : post ? 'POST':'GET',
 		url: url,
 		data: data,
 		success: onSuccess,

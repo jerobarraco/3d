@@ -19,7 +19,6 @@ var mapp = {
 		info_iid:-1,
 		b_fadd:0,
 		cache_ajax:true
-		
 	},
 	m: function m(s){
 		mapp.v.m.innerHTML = s;
@@ -46,8 +45,12 @@ var mapp = {
 			utk: mapp.v.utk,
 			iid: iid
 		};
+		mapp.v.b_i_del.prop('disabled', true);
 		$.js("del.php", params, true, function(lol){
+			debugger;
 			mapp.m("Issue #"+iid+ " eliminado");
+			mapp.v.info.modal("hide");
+			mapp.update(null, true);
 		});
 	},
 	doPostIssue: function doPostIssue(params){//i hate async stuff
