@@ -52,11 +52,11 @@ $.js = function(url, data, post, success, error){
 		error = function(json, suc, h){
 			if (!(isNone(json) || isNone(json.ok))){
 				if(!json.ok){//error logico
-					mapp.m('('+h.status+') '+json.msg);
+					mapp.m('Error: '+json.msg);
 					return;
 				}
 			}
-			mapp.m("Error: " + h.status);
+			mapp.m("Error general: " + h.status);
 		};
 	}
 	

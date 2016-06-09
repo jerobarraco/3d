@@ -45,13 +45,12 @@ var mapp = {
 			utk: mapp.v.utk,
 			iid: iid
 		};
-		mapp.v.b_i_del.prop('disabled', true);
-		$.js("del.php", params, true, function(lol){
-			debugger;
-			mapp.m("Issue #"+iid+ " eliminado");
-			mapp.v.info.modal("hide");
+		$.js("del.php", params, true, function(json){
+			mapp.m("Issue #"+ iid+ " eliminado");
 			mapp.update(null, true);
 		});
+		//mapp.v.b_i_del.prop('disabled', true);
+		mapp.v.info.modal("hide");
 	},
 	doPostIssue: function doPostIssue(params){//i hate async stuff
 		params.uid = mapp.v.uid;
@@ -183,6 +182,8 @@ var mapp = {
 		var params = {
 			n: ne.lat, e:ne.lng,
 			s: sw.lat, w:sw.lng,
+			uid: mapp.v.uid, 
+			utk: mapp.v.utk,
 			cat: mapp.v.cat_filter
 		};
 		
