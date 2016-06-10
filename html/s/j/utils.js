@@ -6,7 +6,6 @@ function isNone(a){
 	return (typeof a === typeof undefined);
 }
 
-
 function _ajaxError(x, status, error) {
 	if (x.status == 403 || x.status == 401 ) {
 		alert("Sorry, your session has expired. Please login again to continue.");

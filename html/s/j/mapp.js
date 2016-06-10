@@ -38,6 +38,17 @@ var mapp = {
 		mapp.v.cpos = [lat, lon, acc];
 		//mapp.showPosition(pos);//actually thanks to a good design i dont need this
 	},
+	closeIssue: function closeIssue(){
+		var params = {
+			uid: mapp.v.uid,
+			utk: mapp.v.utk,
+			iid: iid
+		};
+		$.js("close.php", params, true, function(json){
+			mapp.m("Issue #"+ iid+ " cerrado");
+			mapp.update(null, true);
+		});
+	},
 	delIssue: function delIssue(){
 		var iid = mapp.v.info_iid;
 		var params = {
@@ -396,6 +407,7 @@ var mapp = {
 		mapp.v.mselcnt = $("#mMSBody");
 		mapp.v.b_login = $("#b_login");
 		mapp.v.b_i_del = $("#b_i_del");
+		mapp.v.b_i_ok = $("#b_i_ok");
 		mapp.v.b_fadd = $("#b_fadd");
 		
 		mapp.v.b_fadd.hide();
@@ -415,7 +427,6 @@ var mapp = {
 			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 			maxZoom: 20, //20 is kinda too much
 			reuseTiles: true //If true, all the tiles that are not visible after panning are placed in a reuse queue from which they will be fetched when new tiles become visible (as opposed to dynamically creating new ones). This will in theory keep memory usage low and eliminate the need for reserving new memory whenever a new tile is needed.
-			
 		}).addTo(mapp.v.map);
 		
 		var locopts = { // https://github.com/domoritz/leaflet-locatecontrol
