@@ -2,11 +2,6 @@
 var mapp = { }; //map app
 
 mapp.v = { //values
-	m: 0, //message,
-	mg: 0,//marker cluster
-	info: 0, //infowindo bootstrap
-	infocnt: 0, //infocontent
-	infot: 0, //info title
 	prec: 4, //4	0.0001	0° 00′ 0.36″	individual street, land parcel	11.132 m	10.247 m	7.871 m	4.3496 m
 	// https://en.wikipedia.org/wiki/Decimal_degrees#Precision
 	lupos: [0,0,0,0], //last update pos
@@ -17,10 +12,24 @@ mapp.v = { //values
 	uid: 0,
 	utk: 0,
 	info_iid: -1,
-	b_fadd: 0,
 	cache_ajax: true,
 	cat_filter: -1,
 	state_filter: -1
+	o :{//objects (from ui)
+		m: 0, //message,
+		mg: 0,//marker cluster
+		info: 0, //infowindo bootstrap
+		infocnt: 0, //infocontent
+		infot: 0, //info title
+		b_fadd: 0, //button add on form
+		b_i_del: 0, //button issue delete
+		b_i_ok: 0, //button issue close
+		video: 0, //video item
+		snap: 0, //snap button
+		sel_cat: 0 //new issue, categories selector
+		sel_cat_filter: 0, //categories filter selector
+		
+	},
 };
 
 mapp.m = function m(s){ //message function, very important
@@ -119,14 +128,17 @@ mapp.ui = {//ui related stuff
 			errBack = function(error) {
 				mapp.m("Video capture error: ", error.code); 
 				$("#i_photo_bin").show();
-				$("#video").hide();
-				$("#snap").hide();
+				mapp.v.o.video.hide();
+				//$("#video").hide();
+				mapp.v.o.snap.hide();
+				//$("#snap").hide();
 				mapp.v.photo_bin = true;
 			};
-		
-		$("#video").show();
+		mapp.v.o.video.show();
+		//$("#video").show();
 		//$("#snap").show();
-		$("#snap").hide();
+		//$("#snap").hide();
+		mapp.v.o.snap.hide();
 		$("#canvas").hide();
 		$("#i_photo_bin").hide();
 		
@@ -164,7 +176,8 @@ mapp.ui = {//ui related stuff
 				canvas.height = h;
 			}, 500);
 		});
-		video.addEventListener('click', function(){
+		video.addEventListener('click', function(){ //TODO check if this gets added too many times
+			console.log("video click");
 			context.drawImage(video, 0, 0, w, h);
 			//turn off camera
 			mapp.ui.closeCam();
@@ -172,13 +185,20 @@ mapp.ui = {//ui related stuff
 		});
 	},
 	closeCam: function ui_closeCam(){
-		video.pause();
-		video.src = null;
-		video.mozSrcObject = null;
-		$("#video").hide();
-		$("#snap").show();
-		$("#snap").click(mapp.ui.setPict);
-		$("#i_descr").focus();
+		//stop camera
+		mapp.v.o.video[0].pause();
+		mapp.v.o.video[0].src = null;
+		mapp.v.o.video[0].mozSrcObject = null;
+		
+		//
+		mapp.v.o.video.hide();
+		//$("#video").hide();
+		mapp.v.o.snap.show();
+		//$("#snap").show();
+		mapp.v.o.snap.click(mapp.ui.setPict);// TODO necesario poner aca?
+		//$("#snap").click(mapp.ui.setPict);
+		mapp.v.o.i_descr.focus();
+		//$("#i_descr").focus();
 	},
 	addMarker: function ui_addMarker(place){ // Adds marker for place to map.
 		//var mark  = L.marker([parseFloat(place.lat), parseFloat(place.lon)]).addTo(mapp.v.map)
@@ -198,8 +218,8 @@ mapp.ui = {//ui related stuff
 			idn: parseInt(place.idn), descr:place.descr, score:parseInt(place.score),
 			cat: parseInt(place.cat), state:parseInt(place.state), mine:!!place.mine
 		};
-		mark.on("click", mapp.showInfo);
-		mapp.v.mg.addLayer(mark);
+		mark.on("click", mapp.ui.showInfo);
+		mapp.v.o.mg.addLayer(mark);
 		mapp.v.marks.push(mark);
 	},
 	replaceMarkers: function ui_replaceMarkers (data){//Removes markers from map.
@@ -224,7 +244,7 @@ mapp.ui = {//ui related stuff
 				}
 			}
 			if (fi<0){//not found 
-				mapp.addMarker(data[j]);//adds to oms and markers and CREATES a new "Marker" (gugel data type)
+				mapp.ui.addMarker(data[j]);//adds to oms and markers and CREATES a new "Marker" (gugel data type)
 			}else{
 				old[fi].data.mine = !!data[j].mine; //update the mine flag, because we can get unlogged at any time
 				old[fi].data.state = data[j].state; //update the state flag (might happen after changing )
@@ -232,14 +252,12 @@ mapp.ui = {//ui related stuff
 				old.splice(fi, 1);
 			}
 		}
-		for (i = 0; i < old.length;i++){
-			//mapp.v.map.removeLayer(old[i]);
-			mapp.v.mg.removeLayer(old[i]);
-			//mapp.v.mc.removeMarker(old[i]);
-			//old[i].setMap(null);//its a kind of maaaagic
+		//for (i = 0; i < old.length; i++){
+		for(i in old){
+			mapp.v.o.mg.removeLayer(old[i]);
 		}
 	},
-	showInfo: function showInfo(ev){
+	showInfo: function ui_showInfo(ev){
 		var mark = ev.target;
 		var res = "";
 		//res += '<h4>#'+mark.data.idn+'</h4>';
@@ -251,19 +269,14 @@ mapp.ui = {//ui related stuff
 		tit += " <span class='badge'>"+mark.data.score+'</span></a>';
 		
 		mapp.v.info_iid = mark.data.idn;
-		mapp.v.infot.html(tit);
-		mapp.v.infocnt.html(res);
-		mapp.v.b_i_del.prop('disabled', !mark.data.mine);//if its not mine, can't delete
-		mapp.v.info.modal();
+		mapp.v.o.infot.html(tit);
+		mapp.v.o.infocnt.html(res);
+		mapp.v.o.b_i_del.prop('disabled', !mark.data.mine);//if its not mine, can't delete
+		mapp.v.o.info.modal();
 	},
 	loadCategories: function ui_loadCategories(){
-		$.ajax({
-			type: "GET",
-			url: "cats.php",
-			//data: params,
-			dataType: "json",
-			success: function(data, textStatus, jqXHR) {
-				var _cats = {}; //its an object, ids are not supposed to be sequential
+		$.js("cats.php", {}, false, function loadCategoriesOk(){
+			var _cats = {}; //its an object, ids are not supposed to be sequential
 				mapp.m( data.ok ? "Ok": data.msg);
 				var h = "";
 				if (data.ok) {
@@ -274,12 +287,11 @@ mapp.ui = {//ui related stuff
 					}
 				}
 				mapp.v.cats = _cats;
-				$("#sel_cat").html(h);
-				$("#sel_cat").val(0);
+				mapp.v.o.sel_cat.html(h);
+				mapp.v.o.sel_cat.val(0);
 				h = '<option value="-1"> - Sin Filtro - </option>' +h;
-				$("#sel_cat_filter").html(h);
-				$("#sel_cat_filter").val(0);
-			}
+				mapp.v.o.sel_cat_filter.html(h);
+				mapp.v.o.sel_cat_filter.val(0);
 		});
 	},
 	loadStates: function ui_loadStates(){
