@@ -1,31 +1,35 @@
 //TODO dont open the camera until the user hits take setPict ???
+var mapp = { }; //map app
 
-var mapp = {
-	v:{
-		m: 0, //message,
-		mg: 0,//marker cluster
-		info: 0, //infowindo bootstrap
-		infocnt:0, //infocontent
-		infot:0, //info title
-		prec: 4, //4	0.0001	0° 00′ 0.36″	individual street, land parcel	11.132 m	10.247 m	7.871 m	4.3496 m
-		// https://en.wikipedia.org/wiki/Decimal_degrees#Precision
-		lupos: [0,0,0,0], //last update pos
-		cpos: [0,0,0], //current pos (updated by posChanged)
-		cfpos: [0,0,0], //current form pos (updated by onFormShow)
-		marks: [], //markers
-		photo_bin: false, //is photo input file?
-		uid:0,
-		utk:0,
-		info_iid:-1,
-		b_fadd:0,
-		cache_ajax:true
-	},
-	m: function m(s){
-		mapp.v.m.innerHTML = s;
-		console.log(s);
-	},
-	
-	posChanged: function posChanged(ev){//updates current position
+mapp.v = { //values
+	m: 0, //message,
+	mg: 0,//marker cluster
+	info: 0, //infowindo bootstrap
+	infocnt: 0, //infocontent
+	infot: 0, //info title
+	prec: 4, //4	0.0001	0° 00′ 0.36″	individual street, land parcel	11.132 m	10.247 m	7.871 m	4.3496 m
+	// https://en.wikipedia.org/wiki/Decimal_degrees#Precision
+	lupos: [0,0,0,0], //last update pos
+	cpos: [0,0,0], //current pos (updated by posChanged)
+	cfpos: [0,0,0], //current form pos (updated by onFormShow)
+	marks: [], //markers
+	photo_bin: false, //is photo input file?
+	uid: 0,
+	utk: 0,
+	info_iid: -1,
+	b_fadd: 0,
+	cache_ajax: true,
+	cat_filter: -1,
+	state_filter: -1
+};
+
+mapp.m = function m(s){ //message function, very important
+	mapp.v.m.innerHTML = s;
+	console.log(s);
+};
+
+mapp.pos = { // gps related stuff
+	changed: function pos_changed(ev){//updates current position
 		console.log("pos changed");
 		var lat = ev.latitude, lon = ev.longitude, acc = ev.accuracy,
 			sp = ev.speed;
@@ -38,128 +42,7 @@ var mapp = {
 		mapp.v.cpos = [lat, lon, acc];
 		//mapp.showPosition(pos);//actually thanks to a good design i dont need this
 	},
-	closeIssue: function closeIssue(){
-		var params = {
-			uid: mapp.v.uid,
-			utk: mapp.v.utk,
-			iid: iid
-		};
-		$.js("close.php", params, true, function(json){
-			mapp.m("Issue #"+ iid+ " cerrado");
-			mapp.update(null, true);
-		});
-	},
-	delIssue: function delIssue(){
-		var iid = mapp.v.info_iid;
-		var params = {
-			uid: mapp.v.uid,
-			utk: mapp.v.utk,
-			iid: iid
-		};
-		$.js("del.php", params, true, function(json){
-			mapp.m("Issue #"+ iid+ " eliminado");
-			mapp.update(null, true);
-		});
-		//mapp.v.b_i_del.prop('disabled', true);
-		mapp.v.info.modal("hide");
-	},
-	doPostIssue: function doPostIssue(params){//i hate async stuff
-		params.uid = mapp.v.uid;
-		params.utk = mapp.v.utk;
-		$.ajax({
-			type: "POST",
-			url: "add.php",
-			data: params,
-			dataType: "json",
-			success: function(data, textStatus, jqXHR) {
-				mapp.m( data.ok? "Ok" : data.msg);
-				mapp.v.map.panTo({lat: mapp.v.cfpos[0], lng:mapp.v.cfpos[1]});
-				mapp.update(null, true);
-		}});
-	},
-	addIssue:function addIssue(){ //when the "add issue form" is accepted
-		$("#frmAdd").modal('hide');
-		var lat = mapp.v.cfpos[0];
-		var lon = mapp.v.cfpos[1];
-		var acc = mapp.v.cfpos[2];
-		
-		var params = {
-			lat: lat, lon: lon, acc:acc, 
-			cat: $("#sel_cat").val(),
-			descr: $("#i_descr").val()
-		}
-		if (mapp.v.photo_bin){
-			var reader = new FileReader();
-			reader.onloadend = function (){
-				params['f64'] = reader.result;
-				mapp.doPostIssue(params);
-				//dataToBeSent = reader.result.split("base64,")[1];
-				
-				//$.post(url, {data:dataToBeSent});
-			}
-			reader.readAsDataURL($('#i_photo_bin')[0].files[0]);
-		}else{
-			params['f64'] = document.getElementById("canvas").toDataURL("image/jpeg", 0.9);
-			mapp.doPostIssue(params);
-		};
-		/*
-		$("#i_f64").val(document.getElementById("canvas").toDataURL("image/jpeg"));
-		$("#i_lat").val(lat);
-		$("#i_lon").val(lon);
-		$("#i_acc").val(acc);
-		var data = new FormData($("#frmData")[0]);
-		data.append('photo', $('#i_photo_bin')[0].files[0]);
-		$.ajax( {
-			url: 'add.php',
-			type: 'POST',
-			data: data,
-			processData: false,
-			contentType: false
-		} );
-  */
-		/* TODO send file using file input
-		 * http://abandon.ie/notebook/simple-file-uploads-using-jquery-ajax
-		 * http://portfolio.planetjon.ca/2014/01/26/submit-file-input-via-ajax-jquery-easy-way/
-		 * to do this i need to add a hidden input f64 with the data from the canvas
-		 *$( '#my-form' )
-  .submit( function( e ) {
-    $.ajax( {
-      url: 'http://host.com/action/',
-      type: 'POST',
-      data: new FormData($("form-id")[0]),
-      processData: false,
-      contentType: false
-    } );
-    e.preventDefault();
-  } );
-  */
-		/*$.ajax({
-			type: "POST",
-			url: "add.php",
-			data: params,
-			dataType: "json",
-			success: function(data, textStatus, jqXHR) {
-				mapp.m( data.ok? "Ok": data.msg);
-				mapp.v.map.panTo({lat: lat, lng: lon});
-				mapp.update();
-		}});*/
-	},
-	onCatFilterChange: function onCatFilterChange(ev){
-		mapp.v.cat_filter = parseInt($(this).val());
-		mapp.update(null, true);
-	},
-	onFormShow: function onFormShow(ev){
-		mapp.v.b_fadd.hide();
-		//mapp.v.cfpos = mapp.v.cpos;//dangerous! shared reference
-		//var cp = mapp.v.cpos;
-		//mapp.v.cfpos = [cp[0], cp[1], cp[2]];//store after the user take the picture
-		mapp.setPict();
-	},
-	onFormHide: function onFormHide(ev){
-		mapp.v.b_fadd.show();
-		mapp.closeCam();
-	},
-	showError:function showError(error) {
+	error:function pos_error(error) {
 		switch(error.code) {
 			case error.PERMISSION_DENIED:
 				mapp.m("User denied the request for Geolocation.");
@@ -175,43 +58,48 @@ var mapp = {
 				break;
 		}
 	},
-	canvas2Img: function canvas2Img(canvas){// Converts canvas to an image
-		var image = new Image();
-		image.src = canvas.toDataURL("image/png");
-		return image;
-	},
-	isSamePlace: function isSamePlace(lat, lon, lat2, lon2){
+	isSamePos: function pos_isSamePos(lat, lon, lat2, lon2){
 		return parseFloat(lat).toFixed(mapp.v.prec) == parseFloat(lat2).toFixed(mapp.v.prec) &&
 			parseFloat(lon).toFixed(mapp.v.prec) == parseFloat(lon2).toFixed(mapp.v.prec);
 	},
-	update: function update(ev, force){//  Updates UI's markers.
+	store: function pos_store(){
+		var cp = mapp.v.cpos;
+		mapp.v.cfpos = [cp[0], cp[1], cp[2]]; //avoid ref sharing //yeah copy might be useful rite?
+		mapp.m("Posición: "+mapp.v.cfpos);
+	}
+};
+
+mapp.ui = {//ui related stuff
+	update: function ui_update(ev, force){//  Updates UI's markers.
 		// get map's bounds
 		var bounds = mapp.v.map.getBounds();
 		var ne = bounds.getNorthEast();
 		var sw = bounds.getSouthWest();
 		
 		var params = {
-			n: ne.lat, e:ne.lng,
-			s: sw.lat, w:sw.lng,
+			n: ne.lat, e: ne.lng,
+			s: sw.lat, w: sw.lng,
 			uid: mapp.v.uid, 
 			utk: mapp.v.utk,
-			cat: mapp.v.cat_filter
+			cat: mapp.v.cat_filter,
+			state: mapp.v.state_filter
 		};
 		
 		console.log("about to update");
-		if ((!force) && mapp.isSamePlace(params.n, params.e, mapp.v.lupos[0], mapp.v.lupos[1])){
+		if ((!force) && mapp.pos.isSamePos(params.n, params.e, mapp.v.lupos[0], mapp.v.lupos[1])){
 			console.log("i just updated near that, wont update");
 			return;
 		}
 		
 		mapp.v.lupos = [params.n, params.e, params.s, params.w];
-		
-		$.getJSON("q.php", params)
-			.done(function(data, textStatus, jqXHR) {// get places within bounds (asynchronously)
+		$.js("q.php", params, false, mapp.ui.replaceMarkers);
+		console.log("updated");
+		/*$.getJSON("q.php", params)
+			.done(function(data, textStatus, jqXHR){ // get places within bounds (asynchronously)
 				// remove old markers from map
 				//removeMarkers();
 				if(data.ok){
-					mapp.replaceMarkers(data.data);
+					mapp.ui.replaceMarkers(data.data);
 				}else{
 					mapp.m("Update error: "+ data.error);
 				}
@@ -219,9 +107,9 @@ var mapp = {
 			.fail(function(jqXHR, textStatus, errorThrown) {
 				mapp.m("Update error: "+errorThrown.toString());
 			});
-		console.log("updated");
+		console.log("updated");*/
 	},
-	setPict: function setPict(){
+	setPict: function ui_setPict(){
 		// Put event listeners into place
 		// Grab elements, create settings, etc.
 		var canvas = document.getElementById("canvas"),
@@ -235,12 +123,15 @@ var mapp = {
 				$("#snap").hide();
 				mapp.v.photo_bin = true;
 			};
+		
 		$("#video").show();
 		//$("#snap").show();
 		$("#snap").hide();
 		$("#canvas").hide();
 		$("#i_photo_bin").hide();
+		
 		mapp.v.photo_bin = false; /// restart maybe next time the camera will work
+		
 		// Put video listeners into place
 		if(navigator.getUserMedia) { // Standard
 			navigator.getUserMedia(videoObj, function(stream) {
@@ -274,24 +165,22 @@ var mapp = {
 			}, 500);
 		});
 		video.addEventListener('click', function(){
-			//document.getElementById("snap").addEventListener("click", function() {
-			//$("#canvas").show();
 			context.drawImage(video, 0, 0, w, h);
 			//turn off camera
-			mapp.closeCam();
-			mapp.storePos();
+			mapp.ui.closeCam();
+			mapp.pos.store(); //the position is bounded to the picture, this is actually neat trick to get an accurate issue
 		});
 	},
-	closeCam: function closeCam(){
+	closeCam: function ui_closeCam(){
 		video.pause();
 		video.src = null;
 		video.mozSrcObject = null;
 		$("#video").hide();
 		$("#snap").show();
-		$("#snap").click(mapp.setPict);
+		$("#snap").click(mapp.ui.setPict);
 		$("#i_descr").focus();
 	},
-	addMarker: function addMarker(place){ // Adds marker for place to map.
+	addMarker: function ui_addMarker(place){ // Adds marker for place to map.
 		//var mark  = L.marker([parseFloat(place.lat), parseFloat(place.lon)]).addTo(mapp.v.map)
 		var mopts = {
 			clickable:true, draggable:false, //this are default, but..
@@ -313,7 +202,7 @@ var mapp = {
 		mapp.v.mg.addLayer(mark);
 		mapp.v.marks.push(mark);
 	},
-	replaceMarkers: function replaceMarkers (data){//Removes markers from map.
+	replaceMarkers: function ui_replaceMarkers (data){//Removes markers from map.
 		//in theory js is single threaded so no race conditions here, i suppose
 		
 		/* this code is interesting only if we need to share the reference to the actual array, which we shouldnt anyway
@@ -338,6 +227,7 @@ var mapp = {
 				mapp.addMarker(data[j]);//adds to oms and markers and CREATES a new "Marker" (gugel data type)
 			}else{
 				old[fi].data.mine = !!data[j].mine; //update the mine flag, because we can get unlogged at any time
+				old[fi].data.state = data[j].state; //update the state flag (might happen after changing )
 				mapp.v.marks.push(old[fi]);
 				old.splice(fi, 1);
 			}
@@ -366,7 +256,7 @@ var mapp = {
 		mapp.v.b_i_del.prop('disabled', !mark.data.mine);//if its not mine, can't delete
 		mapp.v.info.modal();
 	},
-	loadCategories: function loadCategories(){
+	loadCategories: function ui_loadCategories(){
 		$.ajax({
 			type: "GET",
 			url: "cats.php",
@@ -392,12 +282,28 @@ var mapp = {
 			}
 		});
 	},
-	storePos: function storePos(){
-		var cp = mapp.v.cpos;
-		mapp.v.cfpos = [cp[0], cp[1], cp[2]];
-		mapp.m("Posición: "+mapp.v.cfpos);
+	loadStates: function ui_loadStates(){
+		//TODO
+		$.js("states.php", null, false, function (data){
+			// TODO crear filtro  de estados
+		});
+	}
+}; 
+
+mapp.on = {//events
+	catFilterChanged: function on_catFilterChanged(ev){
+		mapp.v.cat_filter = parseInt($(this).val());
+		mapp.update(null, true);
 	},
-	onLoad: function onLoad(){ // execute when the DOM is fully loaded
+	formShow: function on_formShow(ev){
+		mapp.v.b_fadd.hide();
+		mapp.setPict();
+	},
+	formHide: function on_formHide(ev){
+		mapp.v.b_fadd.show();
+		mapp.closeCam();
+	},
+	load: function on_load(){ // execute when the DOM is fully loaded
 		mapp.v.follow = true;
 		mapp.v.m = document.getElementById("msg");
 		mapp.v.info = $("#mInfo");
@@ -419,6 +325,7 @@ var mapp = {
 		$('#i_photo_bin')[0].onchange = mapp.storePos;
 		$("#b_add").click(mapp.addIssue);
 		mapp.v.b_i_del.click(mapp.delIssue);
+		mapp.v.b_i_ok.click(mapp.closeIssue);
 	
 		mapp.v.map = L.map('map-canvas').setView([0, 0], 17); // http://leafletjs.com/
 		// http://leafletjs.com/examples/mobile.html
@@ -447,6 +354,81 @@ var mapp = {
 		
 		mapp.loadCategories();
 	}
+	
 };
 
-$(mapp.onLoad);
+mapp.issue = { //issues
+	setState: function issue_setState(iid, stat, msg){
+		var params = {
+			uid: mapp.v.uid,
+			utk: mapp.v.utk,
+			iid: iid,
+			status: stat
+		};
+		msg = mapp.u.get(msg, "Issue # "+iid+" nuevo estado " + stat);
+		$.js("state.php", params, true, function(json){
+			mapp.m(msg);
+			mapp.update(null, true);
+		});
+	},
+	doPost: function issue_doPost(params){ //actually makes the post
+		//i hate async stuff
+		params.uid = mapp.v.uid;
+		params.utk = mapp.v.utk;
+		$.ajax({
+			type: "POST",
+			url: "add.php",
+			data: params,
+			dataType: "json",
+			success: function(data, textStatus, jqXHR) {
+				mapp.m( data.ok? "Ok" : data.msg);
+				mapp.v.map.panTo({lat: mapp.v.cfpos[0], lng:mapp.v.cfpos[1]});
+				mapp.update(null, true);
+		}});
+	},
+	add:function issue_add(){ //when the "add issue form" is accepted
+		$("#frmAdd").modal('hide');
+		var lat = mapp.v.cfpos[0];
+		var lon = mapp.v.cfpos[1];
+		var acc = mapp.v.cfpos[2];
+		
+		var params = {
+			lat: lat, lon: lon, acc: acc, 
+			cat: $("#sel_cat").val(),
+			descr: $("#i_descr").val()
+		}
+		if (mapp.v.photo_bin){
+			var reader = new FileReader();
+			reader.onloadend = function (){
+				params['f64'] = reader.result;
+				mapp.doPostIssue(params);
+				//dataToBeSent = reader.result.split("base64,")[1];
+				
+				//$.post(url, {data:dataToBeSent});
+			}
+			reader.readAsDataURL($('#i_photo_bin')[0].files[0]);
+		}else{
+			params['f64'] = document.getElementById("canvas").toDataURL("image/jpeg", 0.9);
+			mapp.issue.doPost(params);
+		}
+	},
+	close: function issue_close(){
+		mapp.setState(mapp.v.info_iid, 1);
+	},
+	del: function issue_del(){
+		var iid = mapp.v.info_iid;
+		var params = {
+			uid: mapp.v.uid,
+			utk: mapp.v.utk,
+			iid: iid
+		};
+		$.js("del.php", params, true, function(json){
+			mapp.m("Issue #"+ iid+ " eliminado");
+			mapp.update(null, true);
+		});
+		//mapp.v.b_i_del.prop('disabled', true);
+		mapp.v.info.modal("hide");
+	},
+};
+
+$(mapp.on.load);

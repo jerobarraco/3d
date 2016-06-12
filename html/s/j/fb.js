@@ -59,7 +59,7 @@ window.fbAsyncInit = function() {
   FB.Event.subscribe('auth.statusChange', function(response) { 
   //FB.Event.subscribe('auth.authResponseChange', function(response) { 
 	console.log("Fb status changed");
-	console.log(response);
+	//console.log(response);
 	mapp.fb.logStatus(response);
 	// do something with response
 	});

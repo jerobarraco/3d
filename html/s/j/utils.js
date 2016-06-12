@@ -31,7 +31,7 @@ function _ajaxError(x, status, error) {
 
 jQuery.ajaxSetup({
 	error: _ajaxError,
-	cache: mapp.v.cache_ajax
+	cache: true
 });
 
 $.getScript2 = function(file, onsuccess, onerror){
@@ -94,6 +94,17 @@ $.js = function(url, data, post, success, error){
 		success: onSuccess,
 		error: onError
 	});
+};
+
+mapp.u = {
+	get: function get(el, def){
+		return isNone(el)?def:el;
+	},
+	canvas2Img: function canvas2Img(canvas){// Converts canvas to an image
+		var image = new Image();
+		image.src = canvas.toDataURL("image/png");
+		return image;
+	}
 };
 
 var _u = {

@@ -1,0 +1,42 @@
+ 
+/*
+		$("#i_f64").val(document.getElementById("canvas").toDataURL("image/jpeg"));
+		$("#i_lat").val(lat);
+		$("#i_lon").val(lon);
+		$("#i_acc").val(acc);
+		var data = new FormData($("#frmData")[0]);
+		data.append('photo', $('#i_photo_bin')[0].files[0]);
+		$.ajax( {
+			url: 'add.php',
+			type: 'POST',
+			data: data,
+			processData: false,
+			contentType: false
+		} );
+		*/
+		/* TODO send file using file input
+		 * http://abandon.ie/notebook/simple-file-uploads-using-jquery-ajax
+		 * http://portfolio.planetjon.ca/2014/01/26/submit-file-input-via-ajax-jquery-easy-way/
+		 * to do this i need to add a hidden input f64 with the data from the canvas
+		 *$( '#my-form' )
+			.submit( function( e ) {
+				$.ajax( {
+				url: 'http://host.com/action/',
+				type: 'POST',
+				data: new FormData($("form-id")[0]),
+				processData: false,
+				contentType: false
+				} );
+				e.preventDefault();
+			} );
+			*/
+		/*$.ajax({
+			type: "POST",
+			url: "add.php",
+			data: params,
+			dataType: "json",
+			success: function(data, textStatus, jqXHR) {
+				mapp.m( data.ok? "Ok": data.msg);
+				mapp.v.map.panTo({lat: lat, lng: lon});
+				mapp.update();
+		}});*/

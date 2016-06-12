@@ -1,14 +1,15 @@
 <?php
-	//include("stuff/pconn.php");
 	// DONE agregar fotos
 	// DONE agregar categoria
+	// TODO refactorizar, mover esos queries a model
 	
 	if (!isset($_GET["s"], $_GET["w"], $_GET["n"], $_GET["e"])) {
 		echo "error";
 		exit(403);
 	}
 	
-	include("stuff/pconn.php");
+	include("stuff/utils.php");
+	include("stuff/model.php");
 	// explode southwest corner into two variables
 	$s = doubleval($_GET["s"]);//lat
 	$w = doubleval($_GET["w"]);
@@ -19,7 +20,7 @@
 	try{
 		$uid = intval(get($_GET['uid'], -1));
 		$utk = get($_GET['utk'], "");
-		isLogged($uid, $utk);
+		check(logged($uid, $utk), "");
 	}catch(Exception $e){
 		$uid = -1;
 	}
@@ -60,15 +61,5 @@
 		);
 	}
 	
-	
-	header('Content-Type: application/json');
-
-	print(
-		json_encode(
-			array("ok"=>true, "error"=>"", "data"=>$res),
-			JSON_PARTIAL_OUTPUT_ON_ERROR|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT
-		)
-	);
-	//print(json_last_error());
-	exit();
+	putJson(array("ok"=>true, "error"=>"", "data"=>$res));
 ?>
