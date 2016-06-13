@@ -406,7 +406,7 @@ mapp.issue = { //issues
 			data: params,
 			dataType: "json",
 			success: function(data, textStatus, jqXHR) {
-				mapp.m( data.ok? "Ok" : data.msg);
+				mapp.m( "Nuevo issue creado");
 				mapp.v.o.map.panTo({lat: mapp.v.cfpos[0], lng: mapp.v.cfpos[1]});
 				mapp.ui.update(null, true);
 		}});
@@ -448,7 +448,7 @@ mapp.issue = { //issues
 		};
 		$.js("del.php", params, true, function(json){
 			mapp.m("Issue #"+ iid+ " eliminado");
-			mapp.update(null, true);
+			mapp.ui.update(null, true);
 		});
 		//mapp.v.b_i_del.prop('disabled', true);
 		mapp.v.o.info.modal("hide");
