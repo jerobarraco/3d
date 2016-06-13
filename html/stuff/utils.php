@@ -1,4 +1,5 @@
 <?php
+//include before model. i have no idea why yet
 function check($c, $msg=''){
 	if (!$c){
 		$msg = $msg.': '.mysql_error();

@@ -1,30 +1,24 @@
 mapp.fb = {
 	uid:-1,
 	logStatus: function logStatus(response){
-		mapp.v.b_fadd.hide();
-		mapp.v.b_login.show();
+		mapp.v.o.b_fadd.hide();
+		mapp.v.o.b_login.show();
 		
 		if (response.status == "connected"){
 			mapp.m("Conectado a FB");
 			mapp.fb.uid = response.authResponse.userID;
 			
 			var p = {'fid':mapp.fb.uid, 'atk':response.authResponse.accessToken };
-			$.ajax({
-				type: "POST",
-				url: "login.php",
-				data: p,
-				dataType: "json",
-				success: function(data, textStatus, jqXHR) {
-					mapp.v.uid = data.data.uid;
-					mapp.v.utk = data.data.utk;
-					if (data.ok){
-						mapp.m("Bienvenido a 3D (#"+mapp.v.uid+")");
-						mapp.v.b_fadd.show();
-						mapp.v.b_login.hide();
-						mapp.update(null, true); //might waste data, but will update the mine flag
-					}else{
-						mapp.m("Error al logearse. "+data.msg);
-					}
+			$.js("login.php", p, true, function(data){
+				mapp.v.uid = data.data.uid;
+				mapp.v.utk = data.data.utk;
+				if (data.ok){
+					mapp.m("Bienvenido a 3D (#"+mapp.v.uid+")");
+					mapp.v.o.b_fadd.show();
+					mapp.v.o.b_login.hide();
+					mapp.ui.update(null, true); //might waste data, but will update the mine flag
+				}else{
+					mapp.m("Error al logearse. "+data.msg);
 				}
 			});
 		}else if (response.status="not_authorized"){

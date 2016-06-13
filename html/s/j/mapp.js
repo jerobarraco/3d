@@ -14,26 +14,31 @@ mapp.v = { //values
 	info_iid: -1,
 	cache_ajax: true,
 	cat_filter: -1,
-	state_filter: -1
+	state_filter: -1,
 	o :{//objects (from ui)
 		m: 0, //message,
 		mg: 0,//marker cluster
+		map: 0, //map
 		info: 0, //infowindo bootstrap
 		infocnt: 0, //infocontent
 		infot: 0, //info title
+		i_descr: 0,
+		b_login: 0, //fb login button
 		b_fadd: 0, //button add on form
 		b_i_del: 0, //button issue delete
 		b_i_ok: 0, //button issue close
 		video: 0, //video item
 		snap: 0, //snap button
-		sel_cat: 0 //new issue, categories selector
+		sel_cat: 0, //new issue, categories selector
 		sel_cat_filter: 0, //categories filter selector
+		msel: 0, //?
+		mselcnt: 0, //?
 		
 	},
 };
 
 mapp.m = function m(s){ //message function, very important
-	mapp.v.m.innerHTML = s;
+	mapp.v.o.m.innerHTML = s;
 	console.log(s);
 };
 
@@ -81,7 +86,7 @@ mapp.pos = { // gps related stuff
 mapp.ui = {//ui related stuff
 	update: function ui_update(ev, force){//  Updates UI's markers.
 		// get map's bounds
-		var bounds = mapp.v.map.getBounds();
+		var bounds = mapp.v.o.map.getBounds();
 		var ne = bounds.getNorthEast();
 		var sw = bounds.getSouthWest();
 		
@@ -230,7 +235,9 @@ mapp.ui = {//ui related stuff
 		var old = mapp.v.marks.splice(0, mapp.v.marks.length);//splicing would keep the reference, yeah but probably will be slower
 		mapp.v.oms.clearMarkers();
 		mapp.v.marks = [];*/
-		
+		if (!isNone(data.data)){
+			data = data.data; // to allow to be called directly as json callback
+		}
 		var old = mapp.v.marks; //faster (?)
 		mapp.v.marks = [];
 		
@@ -275,23 +282,23 @@ mapp.ui = {//ui related stuff
 		mapp.v.o.info.modal();
 	},
 	loadCategories: function ui_loadCategories(){
-		$.js("cats.php", {}, false, function loadCategoriesOk(){
+		$.js("cats.php", {}, false, function loadCategoriesOk(data){
 			var _cats = {}; //its an object, ids are not supposed to be sequential
-				mapp.m( data.ok ? "Ok": data.msg);
-				var h = "";
-				if (data.ok) {
-					data = data.data;
-					for (var i = 0; i<data.length; i++){
-						_cats [i] = data[i];
-						h += '<option value="'+i+'">'+data[i]+'</option>';
-					}
+			mapp.m( data.ok ? "Ok": data.msg);
+			var h = "";
+			if (data.ok) {
+				data = data.data;
+				for (var i = 0; i<data.length; i++){
+					_cats[i] = data[i];
+					h += '<option value="'+i+'">'+data[i]+'</option>';
 				}
-				mapp.v.cats = _cats;
-				mapp.v.o.sel_cat.html(h);
-				mapp.v.o.sel_cat.val(0);
-				h = '<option value="-1"> - Sin Filtro - </option>' +h;
-				mapp.v.o.sel_cat_filter.html(h);
-				mapp.v.o.sel_cat_filter.val(0);
+			}
+			mapp.v.cats = _cats;
+			mapp.v.o.sel_cat.html(h);
+			mapp.v.o.sel_cat.val(0);
+			h = '<option value="-1"> - Sin Filtro - </option>' +h;
+			mapp.v.o.sel_cat_filter.html(h);
+			mapp.v.o.sel_cat_filter.val(0);
 		});
 	},
 	loadStates: function ui_loadStates(){
@@ -305,48 +312,55 @@ mapp.ui = {//ui related stuff
 mapp.on = {//events
 	catFilterChanged: function on_catFilterChanged(ev){
 		mapp.v.cat_filter = parseInt($(this).val());
-		mapp.update(null, true);
+		mapp.ui.update(null, true);
 	},
 	formShow: function on_formShow(ev){
-		mapp.v.b_fadd.hide();
-		mapp.setPict();
+		//mapp.v.b_fadd.hide(); //maybe this is unnecesary because modal form is modal (shows a protective layer)
+		//hiding and showing craps on the layout
+		mapp.ui.setPict();
 	},
 	formHide: function on_formHide(ev){
-		mapp.v.b_fadd.show();
-		mapp.closeCam();
+		//mapp.v.b_fadd.show();
+		mapp.ui.closeCam();
 	},
 	load: function on_load(){ // execute when the DOM is fully loaded
 		mapp.v.follow = true;
-		mapp.v.m = document.getElementById("msg");
-		mapp.v.info = $("#mInfo");
-		mapp.v.infocnt = $("#mInfoBody");
-		mapp.v.infot = $("#mInfoTitle");
-		mapp.v.msel = $("#mMSel");
-		mapp.v.mselcnt = $("#mMSBody");
-		mapp.v.b_login = $("#b_login");
-		mapp.v.b_i_del = $("#b_i_del");
-		mapp.v.b_i_ok = $("#b_i_ok");
-		mapp.v.b_fadd = $("#b_fadd");
+
+		mapp.v.o.m = document.getElementById("msg");
+		mapp.v.o.info = $("#mInfo");
+		mapp.v.o.infocnt = $("#mInfoBody");
+		mapp.v.o.infot = $("#mInfoTitle");
+		mapp.v.o.msel = $("#mMSel");
+		mapp.v.o.mselcnt = $("#mMSBody");
+		mapp.v.o.i_descr = $("#i_descr");
+		mapp.v.o.b_login = $("#b_login");
+		mapp.v.o.b_i_del = $("#b_i_del");
+		mapp.v.o.b_i_ok = $("#b_i_ok");
+		mapp.v.o.b_fadd = $("#b_fadd");
+		mapp.v.o.video = $("#video");
+		mapp.v.o.snap = $("#snap");
+		mapp.v.o.sel_cat = $("#sel_cat");
+		mapp.v.o.sel_cat_filter = $("#sel_cat_filter");
 		
-		mapp.v.b_fadd.hide();
+		mapp.v.o.b_fadd.hide();
 		$("#b_follow").hide();
 		
-		$('#frmAdd').on('shown.bs.modal', mapp.onFormShow);
-		$('#frmAdd').on('hidden.bs.modal', mapp.onFormHide);
-		$('#sel_cat_filter').change(mapp.onCatFilterChange);
-		$('#i_photo_bin')[0].onchange = mapp.storePos;
-		$("#b_add").click(mapp.addIssue);
-		mapp.v.b_i_del.click(mapp.delIssue);
-		mapp.v.b_i_ok.click(mapp.closeIssue);
+		$('#frmAdd').on('shown.bs.modal', mapp.on.formShow);
+		$('#frmAdd').on('hidden.bs.modal', mapp.on.formHide);
+		$('#sel_cat_filter').change(mapp.on.catFilterChange);
+		$('#i_photo_bin')[0].onchange = mapp.pos.store;
+		$("#b_add").click(mapp.issue.add);
+		mapp.v.o.b_i_del.click(mapp.issue.del);
+		mapp.v.o.b_i_ok.click(mapp.issue.close);
 	
-		mapp.v.map = L.map('map-canvas').setView([0, 0], 17); // http://leafletjs.com/
+		mapp.v.o.map = L.map('map-canvas').setView([0, 0], 17); // http://leafletjs.com/
 		// http://leafletjs.com/examples/mobile.html
 		// https://github.com/leaflet-extras/leaflet-providers
 		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // http://www.openstreetmap.org/copyright
 			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 			maxZoom: 20, //20 is kinda too much
 			reuseTiles: true //If true, all the tiles that are not visible after panning are placed in a reuse queue from which they will be fetched when new tiles become visible (as opposed to dynamically creating new ones). This will in theory keep memory usage low and eliminate the need for reserving new memory whenever a new tile is needed.
-		}).addTo(mapp.v.map);
+		}).addTo(mapp.v.o.map);
 		
 		var locopts = { // https://github.com/domoritz/leaflet-locatecontrol
 			position: 'topleft',
@@ -357,16 +371,15 @@ mapp.on = {//events
 			}
 		};
 		
-		L.control.locate(locopts).addTo(mapp.v.map).start();
-		mapp.v.mg = L.markerClusterGroup();
-		mapp.v.map.addLayer(mapp.v.mg);
-		mapp.v.map.on('locationerror', function(e){ mapp.m( "GPS Error: "+ e.message) });
-		mapp.v.map.on('moveend', mapp.update); //magic event handles drag, pan, zoom i love leaflet so far
-		mapp.v.map.on('locationfound', mapp.posChanged);
-		
-		mapp.loadCategories();
+		L.control.locate(locopts).addTo(mapp.v.o.map).start();
+		mapp.v.o.mg = L.markerClusterGroup();
+		mapp.v.o.map.addLayer(mapp.v.o.mg);
+		//mapp.v.o.map.on('locationerror', function(e){ mapp.m( "GPS Error: "+ e.message) });
+		mapp.v.o.map.on('locationerror', mapp.pos.error);
+		mapp.v.o.map.on('moveend', mapp.ui.update); //magic event handles drag, pan, zoom i love leaflet so far
+		mapp.v.o.map.on('locationfound', mapp.pos.changed);
+		mapp.ui.loadCategories();
 	}
-	
 };
 
 mapp.issue = { //issues
@@ -394,8 +407,8 @@ mapp.issue = { //issues
 			dataType: "json",
 			success: function(data, textStatus, jqXHR) {
 				mapp.m( data.ok? "Ok" : data.msg);
-				mapp.v.map.panTo({lat: mapp.v.cfpos[0], lng:mapp.v.cfpos[1]});
-				mapp.update(null, true);
+				mapp.v.o.map.panTo({lat: mapp.v.cfpos[0], lng: mapp.v.cfpos[1]});
+				mapp.ui.update(null, true);
 		}});
 	},
 	add:function issue_add(){ //when the "add issue form" is accepted
@@ -406,16 +419,15 @@ mapp.issue = { //issues
 		
 		var params = {
 			lat: lat, lon: lon, acc: acc, 
-			cat: $("#sel_cat").val(),
-			descr: $("#i_descr").val()
+			cat: mapp.v.o.sel_cat.val(),
+			descr: mapp.v.o.i_descr.val()
 		}
 		if (mapp.v.photo_bin){
 			var reader = new FileReader();
 			reader.onloadend = function (){
 				params['f64'] = reader.result;
-				mapp.doPostIssue(params);
+				mapp.issue.doPost(params);
 				//dataToBeSent = reader.result.split("base64,")[1];
-				
 				//$.post(url, {data:dataToBeSent});
 			}
 			reader.readAsDataURL($('#i_photo_bin')[0].files[0]);
@@ -439,7 +451,7 @@ mapp.issue = { //issues
 			mapp.update(null, true);
 		});
 		//mapp.v.b_i_del.prop('disabled', true);
-		mapp.v.info.modal("hide");
+		mapp.v.o.info.modal("hide");
 	},
 };
 

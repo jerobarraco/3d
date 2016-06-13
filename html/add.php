@@ -1,13 +1,17 @@
 <?php
 ini_set('post_max_size', '2M');
 ini_set('upload_max_filesize', '2M');
+// TODO set max upload effectively 
+// TODO move sql shit to model
 
 	if($_SERVER['REQUEST_METHOD'] == 'GET'){
 		echo "lol";
 		exit(403);
 	}
 	
-	include("stuff/pconn.php");
+	include("stuff/utils.php");
+	include("stuff/model.php");
+	
 	$res = ["ok"=>false, "msg"=>" no idea", "idn"=>-1];
 	
 	try{
