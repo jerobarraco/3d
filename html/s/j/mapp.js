@@ -406,7 +406,7 @@ mapp.issue = { //issues
 			data: params,
 			dataType: "json",
 			success: function(data, textStatus, jqXHR) {
-				mapp.m( "Nuevo issue creado");
+				mapp.m("Nuevo issue #"+data.iid+" creado");
 				mapp.v.o.map.panTo({lat: mapp.v.cfpos[0], lng: mapp.v.cfpos[1]});
 				mapp.ui.update(null, true);
 		}});

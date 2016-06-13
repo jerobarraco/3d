@@ -12,7 +12,7 @@ ini_set('upload_max_filesize', '2M');
 	include("stuff/utils.php");
 	include("stuff/model.php");
 	
-	$res = ["ok"=>false, "msg"=>" no idea", "idn"=>-1];
+	$res = ["ok"=>false, "msg"=>" no idea", "iid"=>-1];
 	
 	try{
 		$lat = $_POST['lat'];
@@ -33,13 +33,8 @@ ini_set('upload_max_filesize', '2M');
 		$sth->bindParam(1, $uid, PDO::PARAM_INT);
 		$sth->bindParam(2, $utk, PDO::PARAM_STR, 255);
 		
-		if (!$sth->execute()){
-			throw new Exception("Error authenticating: ".$sth->errorCode().": ".$sth->errorInfo() );
-		}
-		
-		if ($sth->rowCount()<1){
-			throw new Exception("User not logged : ".$sth->errorCode().": ".$sth->errorInfo() );
-		}
+		check($sth->execute(),  "Error authenticating: ".$sth->errorCode().": ".$sth->errorInfo() );
+		check($sth->rowCount()>= 1, "User not logged : ".$sth->errorCode().": ".$sth->errorInfo() );
 		
 		$sth = $conn->prepare('INSERT INTO issues (uid, lat, lon, descr, acc, cat, state) VALUES (?, ?, ?, ?, ?, ?, 0);');
 		$sth->bindParam(1, $uid, PDO::PARAM_INT);
@@ -49,9 +44,7 @@ ini_set('upload_max_filesize', '2M');
 		$sth->bindParam(5, $acc, PDO::PARAM_STR); //there's no PDO for decimal.... well done ph
 		$sth->bindParam(6, $cat, PDO::PARAM_INT);
 		
-		if (!$sth->execute()){
-			throw new Exception("Error adding issue: ".$sth->errorCode().": ".$sth->errorInfo() );
-		}
+		check($sth->execute(), "Error adding issue: ".$sth->errorCode().": ".$sth->errorInfo() );
 		
 		$idn = $conn->lastInsertId();
 		$fname = "s/i/".$idn.".jpg";
@@ -70,9 +63,9 @@ ini_set('upload_max_filesize', '2M');
 		}else{
 			//no photo
 		}
-		$res = [ 'ok'=>true, "msg" => 'it is all dandy', "idn"=>intval($idn)];
+		$res = [ 'ok'=>true, "msg" => 'it is all dandy', "iid"=>intval($idn)];
 	}catch(Exception $e) {
-		$res = [ "ok"=> false, "msg" => $e->getMessage(), "idn"=>-1];
+		$res = [ "ok"=> false, "msg" => $e->getMessage(), "iid"=>-1];
 	}
 
 	echo json_encode($res);
