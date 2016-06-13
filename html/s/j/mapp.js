@@ -310,7 +310,8 @@ mapp.ui = {//ui related stuff
 			mapp.v.states = _sts;
 			//h = '<option value="-1"> - Sin Filtro - </option>' +h;
 			mapp.v.o.sel_state_filter.html(h);
-			mapp.v.o.sel_state_filter.val(-2);
+			mapp.v.o.sel_state_filter.val(-1);
+			mapp.v.sel_state_filter = -1;
 		});
 	}
 }; 
@@ -406,7 +407,7 @@ mapp.issue = { //issues
 		msg = mapp.u.get(msg, "Issue # "+iid+" nuevo estado " + stat);
 		$.js("state.php", params, true, function(json){
 			mapp.m(msg);
-			mapp.update(null, true);
+			mapp.ui.update(null, true);
 		});
 	},
 	doPost: function issue_doPost(params){ //actually makes the post
@@ -446,6 +447,7 @@ mapp.issue = { //issues
 	},
 	close: function issue_close(){
 		mapp.issue.setState(mapp.v.info_iid, 1);
+		mapp.v.o.info.modal("hide");
 	},
 	del: function issue_del(){
 		var iid = mapp.v.info_iid;

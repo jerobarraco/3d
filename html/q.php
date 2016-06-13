@@ -48,7 +48,7 @@
 			if( $state == -1 ){
 				$q .= " AND state != 1";
 			}else{
-				$q .= " AND state == ?";
+				$q .= " AND state = ?";
 				$pars[] = $state;
 			}
 		}
@@ -58,11 +58,11 @@
 		
 		//print_r($pars);
 		$stmt->execute($pars);
-		//var_dump($stmt->debugDumpParams());
+		//$msg = var_dump($stmt->debugDumpParams());
 		
 		//echo ("<br> rows <br>");
 		$data = array();
-		
+		$msg = "";
 		foreach ($stmt as $row) {
 			$data[] = array(
 				"iid"=>intval($row['id']), "mine" =>(bool) $row['mine'], "score"=>intval($row['score']),
