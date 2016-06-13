@@ -7,9 +7,6 @@
 	
 	include("stuff/utils.php");
 	include("stuff/model.php");
-	$ok = false;
-	$msg = "unknown";
-	$data = [];
 	
 	try{
 		$uid = intval($_POST['uid']);

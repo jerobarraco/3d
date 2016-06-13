@@ -25,25 +25,19 @@ function endsWith($haystack, $needle){
 	return (substr($haystack, -$length) === $needle);
 }
 
-function putJson($data){
+$ok = false;
+$msg = "unknown";
+$data = [];
+
+function putJS($pdata, $pok=true, $pmsg=""){
 	header('Content-Type: application/json');
 	print(
 		json_encode(
-			$data,
+			array("ok"=>$pok, "msg"=>$pmsg, "data"=>$pdata),
 			JSON_PARTIAL_OUTPUT_ON_ERROR|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT
 		)
 	);
 	exit();
 }
 
-function putJS($data, $ok=true, $msg=""){
-	header('Content-Type: application/json');
-	print(
-		json_encode(
-			array("ok"=>$ok, "msg"=>$msg, "data"=>$data),
-			JSON_PARTIAL_OUTPUT_ON_ERROR|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT
-		)
-	);
-	exit();
-}
 ?>

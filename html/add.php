@@ -12,8 +12,6 @@ ini_set('upload_max_filesize', '2M');
 	include("stuff/utils.php");
 	include("stuff/model.php");
 	
-	$ok = false;
-	$msg = "";
 	$data = ["iid"=>-1];
 	
 	try{

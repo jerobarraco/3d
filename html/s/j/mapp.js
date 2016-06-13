@@ -209,18 +209,18 @@ mapp.ui = {//ui related stuff
 		//var mark  = L.marker([parseFloat(place.lat), parseFloat(place.lon)]).addTo(mapp.v.map)
 		var mopts = {
 			clickable:true, draggable:false, //this are default, but..
-			riseOnHover:true, title: "#"+place.idn + ": " + place.descr,
-			icon: new L.NumberedDivIcon({number: '#'+place.idn, iconUrl:'s/ii/cats/'+place.cat+'.png'})
+			riseOnHover:true, title: "#"+place.iid + ": " + place.descr,
+			icon: new L.NumberedDivIcon({number: '#'+place.iid, iconUrl:'s/ii/cats/'+place.cat+'.png'})
 			/*icon: L.divIcon({
 				className: 'label',
-				html: "#"+place.idn,
+				html: "#"+place.iid,
 				iconSize: [100, 40]
 			})*/
 		};
 		var mark  = L.marker([parseFloat(place.lat), parseFloat(place.lon)], mopts);
-			//.bindPopup("#"+place.idn + ": " + place.descr);
+			//.bindPopup("#"+place.iid + ": " + place.descr);
 		mark.data = { 
-			idn: parseInt(place.idn), descr:place.descr, score:parseInt(place.score),
+			iid: parseInt(place.iid), descr:place.descr, score:parseInt(place.score),
 			cat: parseInt(place.cat), state:parseInt(place.state), mine:!!place.mine
 		};
 		mark.on("click", mapp.ui.showInfo);
@@ -245,7 +245,7 @@ mapp.ui = {//ui related stuff
 		for (var j = 0; j < data.length; j++){
 			fi = -1;
 			for (i= 0; i < old.length;i++){
-				if (data[j].idn == old[i].data.idn){
+				if (data[j].iid == old[i].data.iid){
 					fi = i;
 					break;
 				}
@@ -267,15 +267,15 @@ mapp.ui = {//ui related stuff
 	showInfo: function ui_showInfo(ev){
 		var mark = ev.target;
 		var res = "";
-		//res += '<h4>#'+mark.data.idn+'</h4>';
-		res += '<img src="s/i/'+mark.data.idn+'.jpg" class="img-rounded img-responsive" alt="">';
+		//res += '<h4>#'+mark.data.iid+'</h4>';
+		res += '<img src="s/i/'+mark.data.iid+'.jpg" class="img-rounded img-responsive" alt="">';
 		res += '<div><h4>'+mark.data.descr+'</h4></div>';
 		var tit = "";
 		tit += '<img src="s/ii/cats/'+mark.data.cat+'.png" alt="'+mapp.v.cats[mark.data.cat]+'">';
-		tit += "Evento <a href='#' id='info_iid' idn='"+mark.data.idn+"'>#"+mark.data.idn;
+		tit += "Evento <a href='#' id='info_iid' iid='"+mark.data.iid+"'>#"+mark.data.iid;
 		tit += " <span class='badge'>"+mark.data.score+'</span></a>';
 		
-		mapp.v.info_iid = mark.data.idn;
+		mapp.v.info_iid = mark.data.iid;
 		mapp.v.o.infot.html(tit);
 		mapp.v.o.infocnt.html(res);
 		mapp.v.o.b_i_del.prop('disabled', !mark.data.mine);//if its not mine, can't delete
