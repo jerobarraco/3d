@@ -7,7 +7,9 @@
 	
 	include("stuff/utils.php");
 	include("stuff/model.php");
-	$res = ["ok"=>false, "msg"=>" no idea"];
+	$ok = false;
+	$msg = "unknown";
+	$data = [];
 	
 	try{
 		$uid = intval($_POST['uid']);
@@ -25,12 +27,11 @@
 		
 		check($sth->execute(), "Error adding issue: ".$sth->errorCode().": ".$sth->errorInfo() );
 		check($sth->rowCount()> 0, "No se pudo eliminar el issue");
-		
-		$res = [ 'ok'=>true, "msg" => ''];
+		$ok = true;
+		$msg = "";
 	}catch(Exception $e) {
-		$res = [ "ok"=> false, "msg" => $e->getMessage()];
+		$ok = false;
+		$msg = $e->getMessage();
 	}
-
-	echo json_encode($res);
-	return;
+	putJS($data, $ok, $msg);
 ?>

@@ -12,7 +12,9 @@ ini_set('upload_max_filesize', '2M');
 	include("stuff/utils.php");
 	include("stuff/model.php");
 	
-	$res = ["ok"=>false, "msg"=>" no idea", "iid"=>-1];
+	$ok = false;
+	$msg = "";
+	$data = ["iid"=>-1];
 	
 	try{
 		$lat = $_POST['lat'];
@@ -21,9 +23,7 @@ ini_set('upload_max_filesize', '2M');
 		$uid = intval($_POST['uid']);
 		$utk = $_POST['utk'];
 		
-		if (!isset($_POST['descr']) || $_POST['descr'] == ""){ 
-			throw new Exception("La descripcion no puede estar vacia");
-		}
+		check(isset($_POST['descr']) && $_POST['descr'] != "", "La descripcion no puede estar vacia");
 		
 		$descr = $_POST['descr'];
 		$cat  = intval(get($_POST['cat'], 0));
@@ -63,11 +63,13 @@ ini_set('upload_max_filesize', '2M');
 		}else{
 			//no photo
 		}
-		$res = [ 'ok'=>true, "msg" => 'it is all dandy', "iid"=>intval($idn)];
+		$ok = true;
+		$msg = "";
+		$data = [ "iid" => intval($idn)];
 	}catch(Exception $e) {
-		$res = [ "ok"=> false, "msg" => $e->getMessage(), "iid"=>-1];
+		$msg = $e->getMessage();
+		$ok = false;
+		$data  = [ "iid"=>-1 ];
 	}
-
-	echo json_encode($res);
-	return;
+	putJS($data, $ok, $msg)
 ?>

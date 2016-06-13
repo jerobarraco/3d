@@ -284,14 +284,12 @@ mapp.ui = {//ui related stuff
 	loadCategories: function ui_loadCategories(){
 		$.js("cats.php", {}, false, function loadCategoriesOk(data){
 			var _cats = {}; //its an object, ids are not supposed to be sequential
-			mapp.m( data.ok ? "Ok": data.msg);
+			data = data.data;
 			var h = "";
-			if (data.ok) {
-				data = data.data;
-				for (var i = 0; i<data.length; i++){
-					_cats[i] = data[i];
-					h += '<option value="'+i+'">'+data[i]+'</option>';
-				}
+			//for (var i = 0; i<data.length; i++){
+			for (i in data){
+				_cats[i] = data[i];
+				h += '<option value="'+i+'">'+data[i]+'</option>';
 			}
 			mapp.v.cats = _cats;
 			mapp.v.o.sel_cat.html(h);
@@ -400,16 +398,11 @@ mapp.issue = { //issues
 		//i hate async stuff
 		params.uid = mapp.v.uid;
 		params.utk = mapp.v.utk;
-		$.ajax({
-			type: "POST",
-			url: "add.php",
-			data: params,
-			dataType: "json",
-			success: function(data, textStatus, jqXHR) {
-				mapp.m("Nuevo issue #"+data.iid+" creado");
-				mapp.v.o.map.panTo({lat: mapp.v.cfpos[0], lng: mapp.v.cfpos[1]});
-				mapp.ui.update(null, true);
-		}});
+		$.js("add.php", params, true, function postIssue(data){
+			mapp.m("Nuevo issue #"+data.data.iid+" creado");
+			mapp.v.o.map.panTo({lat: mapp.v.cfpos[0], lng: mapp.v.cfpos[1]});
+			mapp.ui.update(null, true);
+		});
 	},
 	add:function issue_add(){ //when the "add issue form" is accepted
 		$("#frmAdd").modal('hide');
@@ -437,7 +430,7 @@ mapp.issue = { //issues
 		}
 	},
 	close: function issue_close(){
-		mapp.setState(mapp.v.info_iid, 1);
+		mapp.issue.setState(mapp.v.info_iid, 1);
 	},
 	del: function issue_del(){
 		var iid = mapp.v.info_iid;
