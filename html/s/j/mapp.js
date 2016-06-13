@@ -32,9 +32,8 @@ mapp.v = { //values
 		sel_cat: 0, //new issue, categories selector
 		sel_cat_filter: 0, //categories filter selector
 		msel: 0, //?
-		mselcnt: 0, //?
-		
-	},
+		mselcnt: 0 //?
+	}
 };
 
 mapp.m = function m(s){ //message function, very important
@@ -300,9 +299,18 @@ mapp.ui = {//ui related stuff
 		});
 	},
 	loadStates: function ui_loadStates(){
-		//TODO
 		$.js("states.php", null, false, function (data){
-			// TODO crear filtro  de estados
+			var _sts = {}; //its an object, ids are not supposed to be sequential
+			data = data.data;
+			var h = "";
+			for (i in data){
+				_sts[i] = data[i];
+				h += '<option value="'+i+'">'+data[i]+'</option>';
+			}
+			mapp.v.states = _sts;
+			//h = '<option value="-1"> - Sin Filtro - </option>' +h;
+			mapp.v.o.sel_state_filter.html(h);
+			mapp.v.o.sel_state_filter.val(-2);
 		});
 	}
 }; 
@@ -310,6 +318,10 @@ mapp.ui = {//ui related stuff
 mapp.on = {//events
 	catFilterChanged: function on_catFilterChanged(ev){
 		mapp.v.cat_filter = parseInt($(this).val());
+		mapp.ui.update(null, true);
+	},
+	stateFilterChanged: function on_catFilterChanged(ev){
+		mapp.v.state_filter = parseInt($(this).val());
 		mapp.ui.update(null, true);
 	},
 	formShow: function on_formShow(ev){
@@ -339,13 +351,15 @@ mapp.on = {//events
 		mapp.v.o.snap = $("#snap");
 		mapp.v.o.sel_cat = $("#sel_cat");
 		mapp.v.o.sel_cat_filter = $("#sel_cat_filter");
+		mapp.v.o.sel_state_filter = $("#sel_state_filter");
 		
 		mapp.v.o.b_fadd.hide();
 		$("#b_follow").hide();
 		
 		$('#frmAdd').on('shown.bs.modal', mapp.on.formShow);
 		$('#frmAdd').on('hidden.bs.modal', mapp.on.formHide);
-		$('#sel_cat_filter').change(mapp.on.catFilterChange);
+		mapp.v.o.sel_cat_filter.change(mapp.on.catFilterChanged);
+		mapp.v.o.sel_state_filter.change(mapp.on.stateFilterChanged);
 		$('#i_photo_bin')[0].onchange = mapp.pos.store;
 		$("#b_add").click(mapp.issue.add);
 		mapp.v.o.b_i_del.click(mapp.issue.del);
@@ -377,6 +391,7 @@ mapp.on = {//events
 		mapp.v.o.map.on('moveend', mapp.ui.update); //magic event handles drag, pan, zoom i love leaflet so far
 		mapp.v.o.map.on('locationfound', mapp.pos.changed);
 		mapp.ui.loadCategories();
+		mapp.ui.loadStates();
 	}
 };
 
@@ -386,7 +401,7 @@ mapp.issue = { //issues
 			uid: mapp.v.uid,
 			utk: mapp.v.utk,
 			iid: iid,
-			status: stat
+			state: stat
 		};
 		msg = mapp.u.get(msg, "Issue # "+iid+" nuevo estado " + stat);
 		$.js("state.php", params, true, function(json){
@@ -404,7 +419,7 @@ mapp.issue = { //issues
 			mapp.ui.update(null, true);
 		});
 	},
-	add:function issue_add(){ //when the "add issue form" is accepted
+	add: function issue_add(){ //when the "add issue form" is accepted
 		$("#frmAdd").modal('hide');
 		var lat = mapp.v.cfpos[0];
 		var lon = mapp.v.cfpos[1];
@@ -445,7 +460,7 @@ mapp.issue = { //issues
 		});
 		//mapp.v.b_i_del.prop('disabled', true);
 		mapp.v.o.info.modal("hide");
-	},
+	}
 };
 
 $(mapp.on.load);

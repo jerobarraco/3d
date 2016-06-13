@@ -41,7 +41,18 @@
 			$q .= " AND cat = ?";
 			$pars[] = $cat;
 		}
-			
+		
+		$state = intval(get($_GET['state'], -1));
+		
+		if ( $state >-2 ){
+			if( $state == -1 ){
+				$q .= " AND state != 1";
+			}else{
+				$q .= " AND state == ?";
+				$pars[] = $state;
+			}
+		}
+		
 		$q .= " ORDER BY state ASC, score DESC, date DESC LIMIT 50";
 		$stmt = $conn->prepare($q);
 		
@@ -61,7 +72,6 @@
 			);
 		}
 		$ok = true;
-		$msg = "";
 	}catch(Exception $e){
 		$data = [];
 		$ok = false;
